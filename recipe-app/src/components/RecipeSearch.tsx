@@ -10,8 +10,8 @@ const RecipeSearch = () => {
     e.preventDefault()
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=20&apiKey=${process.env.REACT_APP_API_KEY}`
-      )
+        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=20&apiKey=f16eb0701234496cb34349250a29cb25`
+      );
       setRecipies(response.data)
       console.log(response.data)
       setError('')
@@ -32,7 +32,7 @@ const RecipeSearch = () => {
           onChange={e => setIngredients(e.target.value)}
           placeholder='separated them by commas'
         />
-        <button type='submit'>Search</button>
+        <button type='submit'>Add Ingredient</button>
       </form>
       {error && <p>{error}</p>}
     </>
