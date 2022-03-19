@@ -1,8 +1,11 @@
+import RecipeSearch from './components/RecipeSearch'
 
 function App() {
   return (
-    null
-  );
+    <div className='App'>
+      <RecipeSearch />
+    </div>
+  )
 }
 
-export default App;
+export default App
