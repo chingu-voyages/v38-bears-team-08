@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useState } from 'react'
 
-const RecipeSearch = () => {
+export default function SearchRecipiesByIngredients() {
   const [ingredients, setIngredients] = useState('')
   const [recipies, setRecipies] = useState([])
   const [error, setError] = useState('')
@@ -10,7 +10,7 @@ const RecipeSearch = () => {
     e.preventDefault()
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=20&apiKey=f16eb0701234496cb34349250a29cb25`
+        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=20&apiKey=${process.env.REACT_APP_API_KEY}`
       )
       setRecipies(response.data)
       console.log(response.data)
@@ -32,11 +32,9 @@ const RecipeSearch = () => {
           onChange={e => setIngredients(e.target.value)}
           placeholder='separated them by commas'
         />
-        <button type='submit'>Add Ingredient</button>
+        <button type='submit'>Search</button>
       </form>
       {error && <p>{error}</p>}
     </>
   )
 }
-
-export default RecipeSearch
