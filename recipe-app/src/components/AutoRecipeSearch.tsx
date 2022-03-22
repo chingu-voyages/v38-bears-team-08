@@ -1,9 +1,5 @@
 import axios from 'axios'
 import { ChangeEvent, useState, useEffect, SyntheticEvent } from 'react'
-import { MultiSelect } from 'react-multi-select-component'
-import TextField from '@mui/material/TextField'
-import Stack from '@mui/material/Stack'
-import Autocomplete from '@mui/material/Autocomplete'
 
 type optionType = {
   label: string
@@ -16,7 +12,6 @@ type ingredientType = {
 
 const AutoRecipeSearch = () => {
   const [ingredients, setIngredients] = useState('')
-  const [value, setValue] = useState<optionType[]>([])
   const [recipies, setRecipies] = useState([])
   const [options, setOptions] = useState<optionType[]>([])
   const [error, setError] = useState('')
@@ -30,7 +25,6 @@ const AutoRecipeSearch = () => {
           `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f16eb0701234496cb34349250a29cb25&query=${ingredients}&number=10`
         )
         setRecipies(response.data)
-        setValue(response.data)
         console.log('handleChange', response.data)
         const opts = response.data.map((item: ingredientType) => ({
           label: item.name,
@@ -62,42 +56,24 @@ const AutoRecipeSearch = () => {
     }
   }
   // eslint-disable-next-line
-  const handleChange = (e: SyntheticEvent, values: any): void => {
-    // const element = e.currentTarget as HTMLInputElement
-    // const value = element.value
-    setIngredients(values)
+  const handleChange = (e: SyntheticEvent): void => {
+    const element = e.currentTarget as HTMLInputElement
+    const value = element.value
+    setIngredients(value)
   }
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <label htmlFor='ingredients'>Enter ingredients</label>
-        {/* <input
+        <input
           id='ingredients'
           type='text'
           value={ingredients}
           onChange={handleChange}
           placeholder='separated them by commas'
-        /> */}
-        <Stack spacing={2} sx={{ width: 300 }}>
-          <Autocomplete
-            freeSolo
-            id='free-solo-2-demo'
-            disableClearable
-            options={options.map(option => option.label)}
-            onChange={handleChange}
-            renderInput={params => (
-              <TextField
-                {...params}
-                label='Search input'
-                InputProps={{
-                  ...params.InputProps,
-                  type: 'search'
-                }}
-              />
-            )}
-          />
-        </Stack>
+        />
+
         <button type='submit'>Get Recipes</button>
       </form>
       {error && <p>{error}</p>}
