@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */ 
 import { useState, useEffect, SyntheticEvent, FunctionComponent } from 'react'
 import axios from 'axios'
+import { jsx } from '@emotion/react'
 
 type optionType = {
   label: string
@@ -11,7 +13,7 @@ type ingredientType = {
 }
 
 interface Props {
-  setIngredients: (recipies: string[]) => void
+  setIngredients: (recipes: string[]) => void
 }
 
 /**
@@ -42,7 +44,7 @@ const AutoIngredientSearch: FunctionComponent<Props> = ({ setIngredients }) => {
         console.log('options', opts)
         setError('')
       } catch (err) {
-        setError('Error: No recipies found')
+        setError('Error: No recipes found')
         console.log(err)
       }
     }
@@ -71,7 +73,7 @@ const AutoIngredientSearch: FunctionComponent<Props> = ({ setIngredients }) => {
       setError('Error: Ingredient already in the list')
     }
   }
-  // eslint-disable-next-line
+
   const handleChange = (e: SyntheticEvent): void => {
     const element = e.currentTarget as HTMLInputElement
     setIngredient(element.value)
@@ -111,12 +113,18 @@ const AutoIngredientSearch: FunctionComponent<Props> = ({ setIngredients }) => {
   )
 }
 
+interface recipeType {
+  title: string,
+  id: number,
+  image: string,
+}
+
 export default function GetRecipies() {
   const [ingredients, setIngredients] = useState<string[]>([])
-  const [recipies, setRecipies] = useState<string[]>([])
+  const [recipes, setRecipies] = useState<recipeType[]>([])
   const [error, setError] = useState('')
 
-  const handleClick = async (e: React.SyntheticEvent) => {
+  const handleClick = async () => {
     console.log(ingredients)
     try {
       const response = await axios.get(
@@ -126,10 +134,11 @@ export default function GetRecipies() {
       console.log('handleSubmit in GetRecipies', response.data)
       setError('')
     } catch (err) {
-      setError('Error: No recipies found')
+      setError('Error: No recipes found')
       console.log(err)
     }
   }
+  console.log(recipes);
 
   return (
     <>
@@ -138,6 +147,28 @@ export default function GetRecipies() {
         Get Recipes
       </button>
       {error && <p>{error}</p>}
+      {
+        recipes.length === 0 ?
+          null
+          :
+          <div
+            css={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              margin: 'auto',
+              width: '80%',
+            }}
+           id="recipes-grid">
+          {
+            recipes.map((recipe) => (
+            <div id="recipe" key={recipe.id} css={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <img id="recipe-image" src={recipe.image} alt={recipe.title} />
+              <span id="recipe-title">{recipe.title}</span>
+            </div>
+          ))
+          }
+      </div>
+      }
     </>
   )
 }
