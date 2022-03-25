@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./index.js"
+    "dev": "nodemon ./index.js",
+    "lint": "npx eslint ."
   },
   "author": "bears-team-08",
   "license": "MIT",
@@ -15,6 +16,7 @@
     "firebase": "^9.6.10"
   },
   "devDependencies": {
+    "eslint": "^8.11.0",
     "nodemon": "^2.0.15"
   }
 }
