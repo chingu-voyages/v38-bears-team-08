@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */ 
-import { useState, useEffect, SyntheticEvent, FunctionComponent } from 'react'
+import { useState, useEffect, useRef, useCallback, SyntheticEvent, FunctionComponent } from 'react'
 import axios from 'axios'
 import { jsx } from '@emotion/react'
+import { NewLineKind } from 'typescript'
 
 type optionType = {
   label: string
@@ -20,7 +21,7 @@ interface Props {
  *
  *  This component is to add/create a list of ingridients
  */
-// TODO: add setRecipies function as prop
+// TODO: add setShownRecipes function as prop
 const AutoIngredientSearch: FunctionComponent<Props> = ({ setIngredients }) => {
   const [ingredient, setIngredient] = useState('')
   const [ingredientsList, setIngridientsList] = useState<string[]>([])
@@ -121,24 +122,49 @@ interface recipeType {
 
 export default function GetRecipies() {
   const [ingredients, setIngredients] = useState<string[]>([])
-  const [recipes, setRecipies] = useState<recipeType[]>([])
+  const [allRecipes, setAllRecipes] = useState<recipeType[]>([])
+  const [shownRecipes, setShownRecipes] = useState<recipeType[]>([])
   const [error, setError] = useState('')
+  const [page, setPage] = useState<number>(0)
+
+  const observer = useRef<IntersectionObserver>()
+  const lastRecipeRef = useCallback(node => {
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setPage(page => page + 1)
+        console.log(page)
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [])
+
+  useEffect(() => {
+    const loadNewRecipes = () => {
+      console.log('loading recipes')
+      setTimeout(() => {
+        setShownRecipes(allRecipes.slice(0, 16 * page))
+      }, 500)
+    }
+    loadNewRecipes();
+  }, [page])
 
   const handleClick = async () => {
-    console.log(ingredients)
     try {
       const response = await axios.get(
-        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=20&apiKey=f16eb0701234496cb34349250a29cb25`
+        `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f16eb0701234496cb34349250a29cb25`
       )
-      setRecipies(response.data)
+      setAllRecipes(response.data)
+      setPage(1)
       console.log('handleSubmit in GetRecipies', response.data)
       setError('')
     } catch (err) {
       setError('Error: No recipes found')
       console.log(err)
     }
+
   }
-  console.log(recipes);
+
 
   return (
     <>
@@ -148,7 +174,7 @@ export default function GetRecipies() {
       </button>
       {error && <p>{error}</p>}
       {
-        recipes.length === 0 ?
+        shownRecipes.length === 0 ?
           null
           :
           <div
@@ -160,8 +186,8 @@ export default function GetRecipies() {
             }}
            id="recipes-grid">
           {
-            recipes.map((recipe) => (
-            <div id="recipe" key={recipe.id} css={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            shownRecipes.map((recipe, index) => (
+            <div ref={ shownRecipes.length - 1 === index ? lastRecipeRef : null} id="recipe" key={recipe.id} css={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <img id="recipe-image" src={recipe.image} alt={recipe.title} />
               <span id="recipe-title">{recipe.title}</span>
             </div>
