@@ -2,9 +2,10 @@
 require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routeIndex.js');
-const { firebaseApp } = require('./firebase.js')
-console.log(firebaseApp);
+const { firebaseApp } = require('./firebase.js');
+// console.log(firebaseApp);
 const app = express();
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT = 3000;
 
 app.use(
@@ -14,5 +15,5 @@ app.use(
 );
 app.use('/api',router);
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+  console.log(`Example app listening on port ${PORT}`);
+});
