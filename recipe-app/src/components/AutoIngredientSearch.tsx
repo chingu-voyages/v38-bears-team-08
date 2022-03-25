@@ -1,4 +1,4 @@
-import { useState, useEffect, SyntheticEvent, FunctionComponent } from 'react'
+import { useState, useEffect, useRef, useCallback, SyntheticEvent, FunctionComponent } from 'react'
 import axios from 'axios'
 import './styles.css'
 
@@ -12,16 +12,16 @@ type ingredientType = {
 }
 
 interface AutoIngredientSearchProps {
-  setIngredients: (recipies: string[]) => void
+  setIngredients: (recipes: string[]) => void
 }
 
-interface recipyType {
+interface recipeType {
   id: number
   title: string
   image: string
 }
 interface RecipiesViewProps {
-  recipies: recipyType[]
+  recipes: recipeType[]
 }
 
 /**
@@ -41,7 +41,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
       try {
         console.log('fetchRecipies')
         const response = await axios.get(
-          `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f16eb0701234496cb34349250a29cb25&query=${ingredient}&number=10`
+          `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
         )
 
         console.log('handleChange', response.data)
@@ -53,7 +53,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
         console.log('options', opts)
         setError('')
       } catch (err) {
-        setError('Error: No recipies found')
+        setError('Error: No recipes found')
         console.log(err)
       }
     }
@@ -136,11 +136,36 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
   )
 }
 
-const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipies }) => {
+const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
+  const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 20))
+  const [page, setPage] = useState<number>(0)
+
+  const observer = useRef<IntersectionObserver>()
+  const lastRecipeRef = useCallback(node => {
+    if (observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setPage(page => page + 1)
+        console.log(page)
+      }
+    })
+    if (node) observer.current.observe(node)
+  }, [])
+
+  useEffect(() => {
+    const loadNewRecipes = () => {
+      console.log('loading recipes')
+      setTimeout(() => {
+        setShownRecipes(recipes.slice(0, 16 * page))
+      }, 500)
+    }
+    loadNewRecipes();
+  }, [page])
+
   return (
-    <div id='recipies-grid'>
-      {recipies.map((recipe: recipyType) => (
-        <div id='recipy' key={recipe.id}>
+    <div id='recipes-grid'>
+      {shownRecipes.map((recipe: recipeType, index: number) => (
+        <div ref={ shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe' key={recipe.id}>
           <img id='recipe-image' src={recipe.image} alt={recipe.title} />
           <span id='recipe-title'>{recipe.title}</span>
         </div>
@@ -151,7 +176,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipies }) => {
 
 export default function GetRecipies() {
   const [ingredients, setIngredients] = useState<string[]>([])
-  const [recipies, setRecipies] = useState<recipyType[]>([])
+  const [recipes, setRecipies] = useState<recipeType[]>([])
   const [error, setError] = useState('')
 
   const handleClick = async () => {
@@ -159,13 +184,13 @@ export default function GetRecipies() {
     if (ingredients.length > 0) {
       try {
         const response = await axios.get(
-          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f16eb0701234496cb34349250a29cb25`
+          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
         )
         setRecipies(response.data)
         console.log('handleSubmit in GetRecipies', response.data)
         setError('')
       } catch (err) {
-        setError('Error: No recipies found')
+        setError('Error: No recipes found')
         console.log(err)
       }
     } else {
@@ -182,7 +207,7 @@ export default function GetRecipies() {
         </button>
         {error && <p>{error}</p>}
       </div>
-      {recipies.length !== 0 ? <RecipiesView recipies={recipies} /> : null}
+      {recipes.length !== 0 ? <RecipiesView recipes={recipes} /> : null}
     </>
   )
 }
