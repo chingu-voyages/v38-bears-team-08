@@ -47,6 +47,26 @@ body {
   border-bottom: 1px solid #e74c3c;
 }
 
+::-webkit-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+::-moz-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+:-ms-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+::-ms-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
 ::placeholder {
   color: #e74c3c;
   font-size: 1.2em;
@@ -96,6 +116,7 @@ body {
     inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
   -ms-user-select: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -109,9 +130,7 @@ body {
 }
 
 #recipies-grid {
-  -ms-grid: grid;
   display: grid;
-  -ms-grid-columns: repeat(4, 1fr);
   grid-template-columns: repeat(4, 1fr);
   margin: auto;
   width: 80%;
