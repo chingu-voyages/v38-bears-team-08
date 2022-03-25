@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 const { initializeApp } = require("firebase/app");
 const { getAnalytics } = require("firebase/analytics");
+const { getAuth, createUserWithEmailAndPassword } = require("firebase/auth");
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,6 +17,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(app);
 
 /*Current error on this line: analytics not supported in this environment // Figure it out: 
 
@@ -25,3 +27,5 @@ Details: (1) Cookies are not available. (analytics/invalid-analytics-context).
 const analytics = getAnalytics(app); */
 
 exports.firebaseApp = app;
+exports.firebaseAuth = firebaseAuth;
+exports.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
