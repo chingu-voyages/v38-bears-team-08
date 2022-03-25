@@ -1,11 +1,19 @@
-const express = require('express')
-const app = express()
-const port = 3000
+//Import dependencies
+// import express from 'express';
+// import router from './routes/routeIndex.js';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const express = require('express');
+const router = require('./routes/routeIndex.js');
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+const app = express();
+const PORT = process.env.PORT = 3000;
+
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+);
+app.use('/api',router);
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`)
 })
