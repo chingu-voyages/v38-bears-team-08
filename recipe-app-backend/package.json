@@ -10,7 +10,9 @@
   "author": "bears-team-08",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.3"
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "firebase": "^9.6.10"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

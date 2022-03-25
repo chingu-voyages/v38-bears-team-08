@@ -1,10 +1,9 @@
 //Import dependencies
-// import express from 'express';
-// import router from './routes/routeIndex.js';
-
+require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routeIndex.js');
-
+const { firebaseApp } = require('./firebase.js')
+console.log(firebaseApp);
 const app = express();
 const PORT = process.env.PORT = 3000;
 
