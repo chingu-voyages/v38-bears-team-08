@@ -1,6 +1,7 @@
 const express = require('express');
 const authRouter = express.Router();
-const {registerWithEmail} = require('../../controllers/authentication/authController.js');
+const {registerWithEmail, loginWithEmail} = require('../../controllers/authentication/authController.js');
+
 // Implements SignUp
 authRouter.route('/register')
   .post(async(req, res) => {
@@ -12,16 +13,17 @@ authRouter.route('/register')
   });
 
 // Implements SignIn & Logout
-// authRouter.route('/sessions')
-// .get(async(req, res) => {
-//   console.log(res);
-//   let result, userName, password 
-//   // const result = await registerUser(userName, password);
-//   console.log(result);    
-// })
-// .delete((req, res) => {
-//   //log out
-// });
+authRouter.route('/sessions')
+  .post(async(req, res) => {
+    try{
+      await loginWithEmail(req, res); 
+    }catch(error){
+      console.log(error);
+    }  
+  })
+  .delete((req, res) => {
+    //log out
+  });
   
 
 module.exports = authRouter;

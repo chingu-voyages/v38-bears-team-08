@@ -20,6 +20,12 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "block-scoped-var": "error",
+        "curly": [
+          "error"
+        ],
+        "arrow-parens": "error", 
+        "arrow-spacing": "error"        
     }
 }
