@@ -3,14 +3,15 @@ const signInUserWithEmail = require('../../services/authenticationService/signIn
 
 const registerWithEmail = async (req, res) => {
   let createdUser;
-  if ( !req.body.email || !req.body.password ) {
+  if ( !req.body.email || !req.body.password || !req.body.userName ) {
     res.status(406).json({ 
-      message: 'UserName/ Email & Password cannot be empty!' 
+      message: 'UserName, Email & Password cannot be empty!' 
     });
   }
-  const email = req.body.email, password = req.body.password; 
+  const email = req.body.email, password = req.body.password, userName = req.body.userName; 
+  console.log(email, password, userName);
   try{
-    createdUser = await registerUser(email, password);
+    createdUser = await registerUser(email, password, userName);
     console.log(createdUser);
     res.status(200).json({
       message: 'User created', 

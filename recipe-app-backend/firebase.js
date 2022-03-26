@@ -1,7 +1,6 @@
 // Import the functions you need from the SDKs you need
-const { initializeApp } = require('firebase/app');
-const { getAnalytics } = require('firebase/analytics');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require('firebase/auth');
+const { initializeApp } = require('firebase-admin/app');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require('firebase-admin/auth');
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,17 +15,12 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
+});
 const firebaseAuth = getAuth(app);
-
-/*Current error on this line: analytics not supported in this environment // Figure it out: 
-
-Error:  @firebase/analytics: Analytics: Firebase Analytics is not supported in this environment. 
-Wrap initialization of analytics in analytics.isSupported() to prevent initialization in unsupported environments. 
-Details: (1) Cookies are not available. (analytics/invalid-analytics-context).
-const analytics = getAnalytics(app); */
 
 exports.firebaseApp = app;
 exports.firebaseAuth = firebaseAuth;
-exports.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+// exports.createUserWithEmailAndPassword = firebaseAuth.createUser;
 exports.signInWithEmailAndPassword = signInWithEmailAndPassword;
