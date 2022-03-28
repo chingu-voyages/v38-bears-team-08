@@ -144,8 +144,6 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 20))
   const [page, setPage] = useState<number>(0)
 
-  console.log(page)
-
   const observer = useRef<IntersectionObserver>()
   const lastRecipeRef = useCallback(node => {
     if (observer.current) observer.current.disconnect()
@@ -181,7 +179,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
       {shownRecipes.map((recipe: recipeType, index: number) => (
         <div ref={ shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe' key={recipe.id}>
           <img id='recipe-image' src={recipe.image} alt={recipe.title} />
-          <span id='recipe-title'>{recipe.title}</span>
+          <span id='recipe-title'>{ recipe.title.length >= 40 ? `${recipe.title.slice(0, 40)}...` : recipe.title}</span>
         </div>
       ))}
     </div>
