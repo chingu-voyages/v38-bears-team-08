@@ -22,7 +22,8 @@ authRouter.route('/sessions')
     }  
   })
   .delete((req, res) => {
-    //log out
+    //TODO: Reasearch on how to revoke tokenId client. Firebase docs say they last for at least an hour but 
+    // neeed to find out if they can be revoked immediately 
   });
   
 
