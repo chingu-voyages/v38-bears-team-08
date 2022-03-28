@@ -2,8 +2,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = require('./routes/routeIndex.js');
-const { firebaseApp } = require('./firebase.js');
-// console.log(firebaseApp);
 const app = express();
 // eslint-disable-next-line no-undef
 const PORT = process.env.PORT = 3000;

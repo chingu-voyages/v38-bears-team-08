@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 const { initializeApp } = require('firebase-admin/app');
-const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require('firebase-admin/auth');
+const { getAuth } = require('firebase-admin/auth');
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -15,12 +15,8 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-const app = initializeApp({
-  // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com'
-});
+const app = initializeApp({});
 const firebaseAuth = getAuth(app);
 
 exports.firebaseApp = app;
 exports.firebaseAuth = firebaseAuth;
-// exports.createUserWithEmailAndPassword = firebaseAuth.createUser;
-exports.signInWithEmailAndPassword = signInWithEmailAndPassword;

@@ -54,11 +54,24 @@ const loginWithEmail = async(req,res) => {
       message: 'User Logged in Succesfuly', 
       metaData: loggedInUserData,
     });
-    console.log(loggedInUserData);
   } catch(error) {
-    if(error.code == 'auth/wrong-password') {
+    if(error.message == 'INVALID_PASSWORD') {
       res.status(401).json({
-        message: 'User not loggedIn. Email and passwords do not match',
+        message: 'User not logged In. Email and passwords do not match',
+      });
+    } else if(error.message == 'EMAIL_NOT_FOUND') {
+      res.status(401).json({
+        message: 'User not logged In. Email address does not exist in our Database',
+      });
+    } else if(error.message == 'INVALID_EMAIL') {
+      res.status(401).json({
+        message: 'User not logged In. Invalid email. Please counter check and add client side validation',
+      });
+    } 
+    else {
+      res.status(500).json({ 
+        message: 'Authentication failed! Please Try again',
+        error: error,
       });
     }
   }
