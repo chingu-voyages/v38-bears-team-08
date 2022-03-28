@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef, useCallback, SyntheticEvent, FunctionComponent } from 'react'
 import axios from 'axios'
+import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
 
 type optionType = {
   label: string
   value: string
+  id: number
 }
 type ingredientType = {
   name: string
-  image: string
+  id: number
 }
 
 interface AutoIngredientSearchProps {
@@ -33,21 +35,23 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 }) => {
   const [ingredient, setIngredient] = useState('')
   const [ingredientsList, setIngridientsList] = useState<string[]>([])
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState<optionType[]>([])
   const [error, setError] = useState('')
+
+  const autoComplete = () => {
+    const matchingIngredients = ingredientOptions.filter((ingredientOption: ingredientType) => ingredient === ingredientOption.name.slice(0, ingredient.length) )
+    return matchingIngredients.slice(0, 10)
+  }
 
   useEffect(() => {
     const fetchRecipies = async () => {
-      try {
-        console.log('fetchRecipies')
-        const response = await axios.get(
-          `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
-        )
-
-        console.log('handleChange', response.data)
-        const opts = response.data.map((item: ingredientType) => ({
+      try {        
+        const matchingIngredients = autoComplete();
+        console.log('handleChange', matchingIngredients)
+        const opts = matchingIngredients.map((item: ingredientType) => ({
           label: item.name,
-          value: item.name
+          value: item.name,
+          id: item.id
         }))
         setOptions(opts)
         console.log('options', opts)
@@ -123,7 +127,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
           <datalist id='ingredients-list'>
             {options
               ? options.map((item: optionType) => (
-                  <option key={item.label} value={item.value} />
+                  <option key={item.id} value={item.value} />
                 ))
               : null}
           </datalist>
@@ -139,6 +143,8 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 20))
   const [page, setPage] = useState<number>(0)
+
+  console.log(page)
 
   const observer = useRef<IntersectionObserver>()
   const lastRecipeRef = useCallback(node => {
@@ -160,7 +166,15 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
       }, 500)
     }
     loadNewRecipes();
-  }, [page])
+  }, [page, recipes])
+
+  useEffect(() => {
+    /* Resets infinite scroll when a new recipes are loaded */
+    const resetPages = () => {
+      setPage(1)
+    }
+    resetPages()
+  }, [recipes])
 
   return (
     <div id='recipes-grid'>
