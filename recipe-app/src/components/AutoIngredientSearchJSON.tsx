@@ -14,6 +14,7 @@ type optionType = {
   label: string
   value: string
 }
+
 type ingredientType = {
   name: string
   image: string
@@ -47,15 +48,16 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
   useEffect(() => {
     const fetchIngredients = async () => {
       try {
-        // console.log('fetchIngredients')
+        console.log('fetchIngredients')
         // const response = await axios.get(
         //   `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
         // )
+
         const response = RECIPIES_DATA.filter(ingr => {
-          //   console.log('ingr', ingr)
-          //   console.log('ingr.name', ingr.name)
-          //   console.log('ingredient', ingredient)
-          return ingr.name.startsWith(ingredient)
+          //   const regex = new RegExp('(?=.*' + ingredient + ')^' + ingredient, 'i')
+          const regex = new RegExp(`.*${ingredient}`, 'gi')
+          //   return ingr.name.match(regex)
+          return ingr.name.includes(ingredient)
         })
 
         console.log('fetchIngredients response', response.slice(0, 10))
@@ -177,6 +179,14 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
     loadNewRecipes()
   }, [page, recipes])
 
+  useEffect(() => {
+    /* Resets infinite scroll when a new recipes are loaded */
+    const resetPages = () => {
+      setPage(1)
+    }
+    resetPages()
+  }, [recipes])
+
   return (
     <div id='recipes-grid'>
       {shownRecipes.map((recipe: recipeType, index: number) => (
@@ -185,7 +195,9 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
           id='recipe'
           key={recipe.id}>
           <img id='recipe-image' src={recipe.image} alt={recipe.title} />
-          <span id='recipe-title'>{recipe.title}</span>
+          <span id='recipe-title'>
+            {recipe.title.length >= 40 ? `${recipe.title.slice(0, 40)}...` : recipe.title}
+          </span>
         </div>
       ))}
     </div>
