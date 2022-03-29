@@ -8,6 +8,7 @@ import {
 } from 'react'
 import axios from 'axios'
 import './styles.css'
+import { RECIPIES_DATA } from '../data/recipies-data.js'
 
 type optionType = {
   label: string
@@ -44,20 +45,26 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const fetchRecipies = async () => {
+    const fetchIngredients = async () => {
       try {
-        console.log('fetchRecipies')
-        const response = await axios.get(
-          `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
-        )
+        // console.log('fetchIngredients')
+        // const response = await axios.get(
+        //   `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
+        // )
+        const response = RECIPIES_DATA.filter(ingr => {
+          //   console.log('ingr', ingr)
+          //   console.log('ingr.name', ingr.name)
+          //   console.log('ingredient', ingredient)
+          return ingr.name.startsWith(ingredient)
+        })
 
-        console.log('handleChange', response.data)
-        const opts = response.data.map((item: ingredientType) => ({
-          label: item.name,
-          value: item.name
-        }))
-        setOptions(opts)
-        console.log('options', opts)
+        console.log('fetchIngredients response', response.slice(0, 10))
+        // const opts = response.data.map((item: ingredientType) => ({
+        //   label: item.name,
+        //   value: item.name
+        // }))
+        // setOptions(opts)
+        // console.log('options', opts)
         setError('')
       } catch (err) {
         setError('Error: No recipes found')
@@ -65,7 +72,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
       }
     }
     if (ingredient) {
-      fetchRecipies()
+      fetchIngredients()
     }
   }, [ingredient])
 

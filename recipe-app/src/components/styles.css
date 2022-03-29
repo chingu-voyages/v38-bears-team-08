@@ -7,6 +7,8 @@ body {
 #search-component {
   display: flex;
   flex-direction: column;
+  max-width: 450px;
+  margin: 0 auto;
 }
 
 #ingredient-search {
@@ -129,7 +131,7 @@ body {
   outline: 0;
 }
 
-#recipies-grid {
+#recipes-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   margin: auto;
@@ -145,20 +147,11 @@ body {
 @media screen and (max-width: 375px) {
   #search-component {
     width: 90%;
-    margin: 0 auto;
   }
 }
 
 @media screen and (min-width: 780px) and (max-width: 1024px) {
-  #search-component {
-    width: 70%;
-    margin: 0 auto;
-  }
 }
 
 @media screen and (min-width: 1025px) {
-  #search-component {
-    width: 40%;
-    margin: 0 auto;
-  }
 }
