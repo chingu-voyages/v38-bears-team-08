@@ -4,6 +4,11 @@ const {registerWithEmail, loginWithEmail, forgotUserPassword} = require('../../c
 
 // Implements SignUp
 authRouter.route('/register')
+  .get((req,res) => {
+    res.status(200).json({
+      message:'register route works'
+    });
+  })
   .post(async(req, res) => {
     try{
       await registerWithEmail(req, res); 
@@ -26,15 +31,15 @@ authRouter.route('/sessions')
     // neeed to find out if they can be revoked immediately 
   });
 
-  //Implements user reset password
-  authRouter.route('/forgotpassword')
+//Implements user reset password
+authRouter.route('/forgotpassword')
   .post(async(req,res) => {
     try{
       await forgotUserPassword(req,res);
     }catch(error){
       console.log('forgot user password error: ', error);
     }
-  })
+  });
   
 
 module.exports = authRouter;
