@@ -1,5 +1,6 @@
 const registerUser = require('../../services/authenticationService/signUp.js');
 const signInUserWithEmail = require('../../services/authenticationService/signIn.js');
+const resetUserPasswordFromEmail = require('../../services/authenticationService/resetPassword.js');
 
 const registerWithEmail = async (req, res) => {
   let createdUser;
@@ -77,5 +78,35 @@ const loginWithEmail = async(req,res) => {
   }
 };
 
+const forgotUserPassword = async(req, res) => {
+  try{
+    if ( !req.body.email ) {
+      res.status(406).json({ 
+        message: 'UserName/ Email & Password cannot be empty!' 
+      });
+    }
+    const email = req.body.email;
+    const responseStatus = await resetUserPasswordFromEmail(email);
+    // console.log('response status: ', responseStatus);
+    if(responseStatus == 200){
+      res.status(200).json({
+        message: 'User password reset email has been sent',
+      });
+    }
+  } catch(error){
+    console.log(error);
+    if(error.message == 'EMAIL_NOT_FOUND') {
+      res.status(400).json({
+        message: 'User email is not in our User Database or Email is in an invalid format. Please retry with correct email',
+      });
+    } else if(error.message == 'INVALID_EMAIL') {
+      res.status(400).json({
+        message: 'User email is in an invalid format. Please retry with correct email',
+      });
+    } 
+  }
+};
+
 exports.registerWithEmail = registerWithEmail;
 exports.loginWithEmail = loginWithEmail;
+exports.forgotUserPassword = forgotUserPassword;
