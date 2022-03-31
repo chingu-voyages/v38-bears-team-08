@@ -7,17 +7,17 @@ import {
   FunctionComponent
 } from 'react'
 import axios from 'axios'
-import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
+import { RECIPIES_DATA } from '../data/recipies-data.js'
 
 type optionType = {
   label: string
   value: string
-  id: number
 }
+
 type ingredientType = {
   name: string
-  id: number
+  image: string
 }
 
 interface AutoIngredientSearchProps {
@@ -42,29 +42,31 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 }) => {
   const [ingredient, setIngredient] = useState('')
   const [ingredientsList, setIngridientsList] = useState<string[]>([])
-  const [options, setOptions] = useState<optionType[]>([])
+  const [options, setOptions] = useState([])
   const [error, setError] = useState('')
 
-  const autoComplete = () => {
-    const matchingIngredients = ingredientOptions.filter(
-      (ingredientOption: ingredientType) =>
-        ingredient === ingredientOption.name.slice(0, ingredient.length)
-    )
-    return matchingIngredients.slice(0, 10)
-  }
-
   useEffect(() => {
-    const fetchRecipies = async () => {
+    const fetchIngredients = async () => {
       try {
-        const matchingIngredients = autoComplete()
-        console.log('handleChange', matchingIngredients)
-        const opts = matchingIngredients.map((item: ingredientType) => ({
-          label: item.name,
-          value: item.name,
-          id: item.id
-        }))
-        setOptions(opts)
-        console.log('options', opts)
+        console.log('fetchIngredients')
+        // const response = await axios.get(
+        //   `https://api.spoonacular.com/food/ingredients/autocomplete?apiKey=f2998c2dba0c42f1b03c4774b90d04f5&query=${ingredient}&number=10`
+        // )
+
+        const response = RECIPIES_DATA.filter(ingr => {
+          //   const regex = new RegExp('(?=.*' + ingredient + ')^' + ingredient, 'i')
+          const regex = new RegExp(`.*${ingredient}`, 'gi')
+          //   return ingr.name.match(regex)
+          return ingr.name.includes(ingredient)
+        })
+
+        console.log('fetchIngredients response', response.slice(0, 10))
+        // const opts = response.data.map((item: ingredientType) => ({
+        //   label: item.name,
+        //   value: item.name
+        // }))
+        // setOptions(opts)
+        // console.log('options', opts)
         setError('')
       } catch (err) {
         setError('Error: No recipes found')
@@ -72,7 +74,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
       }
     }
     if (ingredient) {
-      fetchRecipies()
+      fetchIngredients()
     }
   }, [ingredient])
 
@@ -137,7 +139,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
           <datalist id='ingredients-list'>
             {options
               ? options.map((item: optionType) => (
-                  <option key={item.id} value={item.value} />
+                  <option key={item.label} value={item.value} />
                 ))
               : null}
           </datalist>
