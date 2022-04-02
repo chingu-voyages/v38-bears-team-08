@@ -165,3 +165,25 @@ body {
   text-align: center;
   padding: 0.5em 0.3em;
 }
+
+#recipe-image {
+  width: 312px;
+  height: 231px
+}
+
+/* Header component */
+
+header {
+  margin: 1em;
+}
+
+header nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: flex-end;
+  gap: 1em;
+}
+
+ul li a {
+  text-decoration: none;
+}
