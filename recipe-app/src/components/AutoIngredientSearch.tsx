@@ -155,6 +155,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
   const [page, setPage] = useState<number>(0)
 
   console.log('RecipiesView', recipes)
+  console.log('shownRecipes', shownRecipes)
   const observer = useRef<IntersectionObserver>()
   const lastRecipeRef = useCallback(node => {
     if (observer.current) observer.current.disconnect()
@@ -233,7 +234,7 @@ export default function GetRecipies() {
         <button className='btn-primary' onClick={handleClick} type='submit'>
           Get Recipes
         </button>
-        {error && <p>{error}</p>}
+        {error && <p id='error-msg'>{error}</p>}
       </div>
       {recipes.length !== 0 ? <RecipiesView recipes={recipes} /> : null}
     </>
