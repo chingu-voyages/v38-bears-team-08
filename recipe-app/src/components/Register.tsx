@@ -8,7 +8,11 @@ interface registerType {
 }
 
 const Register = () => {
-  const [state, setState] = useState<registerType>({} as registerType)
+  const [state, setState] = useState<registerType>({
+    email: '',
+    username: '',
+    password: ''
+  } as registerType)
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.currentTarget as HTMLInputElement
@@ -34,13 +38,28 @@ const Register = () => {
   return (
     <form id='register-form' action='' onSubmit={handleSubmit}>
       <label htmlFor='email'>Email</label>
-      <input type='email' name='email' id='email' onChange={handleChange} required />
+      <input
+        type='email'
+        name='email'
+        value={state.email}
+        id='email'
+        onChange={handleChange}
+        required
+      />
       <label htmlFor='username'>Username</label>
-      <input type='text' name='username' id='username' onChange={handleChange} required />
+      <input
+        type='text'
+        name='username'
+        value={state.username}
+        id='username'
+        onChange={handleChange}
+        required
+      />
       <label htmlFor='password'>Password</label>
       <input
         type='password'
         name='password'
+        value={state.password}
         id='password'
         onChange={handleChange}
         required
