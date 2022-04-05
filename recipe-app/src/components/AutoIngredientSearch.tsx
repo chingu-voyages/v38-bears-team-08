@@ -107,7 +107,6 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 
   const handleChange = (e: SyntheticEvent): void => {
     const element = e.currentTarget as HTMLInputElement
-    console.log
     setIngredient(element.value)
   }
 
@@ -234,7 +233,7 @@ export default function GetRecipies() {
         <button className='btn-primary' onClick={handleClick} type='submit'>
           Get Recipes
         </button>
-        {error && <p id='error-msg'>{error}</p>}
+        {error && <p className='error-msg'>{error}</p>}
       </div>
       {recipes.length !== 0 ? <RecipiesView recipes={recipes} /> : null}
     </>

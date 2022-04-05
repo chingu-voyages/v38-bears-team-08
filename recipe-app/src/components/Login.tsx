@@ -21,7 +21,7 @@ const Login = () => {
     })
   }
 
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const data = await axios.post(
       'https://aqueous-dawn-28459.herokuapp.com/api/auth/sessions',

@@ -1,3 +1,4 @@
+/* General styling (all documents) */
 * {
   box-sizing: border-box;
 }
@@ -8,7 +9,40 @@ body {
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-#search-component {
+
+.btn-primary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  border-radius: 6px;
+  border: none;
+
+  color: #fff;
+  background: linear-gradient(180deg, #4b91f7 0%, #367af6 100%);
+  background-origin: border-box;
+  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25),
+    inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-bottom: 0.3em;
+}
+
+.btn-primary:focus {
+  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2),
+    0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  outline: 0;
+}
+/* END OF General styling */
+
+
+/* Home (AutoIngredientSearch component */
+#search-component{
   display: flex;
   flex-direction: column;
   max-width: 450px;
@@ -78,7 +112,7 @@ body {
   font-size: 1.2em;
 }
 
-#error-msg {
+.error-msg {
   color: #e74c3c;
   font-size: 1.2em;
 }
@@ -111,35 +145,7 @@ body {
   border: none;
 }
 
-.btn-primary {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 6px 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-  border-radius: 6px;
-  border: none;
-
-  color: #fff;
-  background: linear-gradient(180deg, #4b91f7 0%, #367af6 100%);
-  background-origin: border-box;
-  box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25),
-    inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  margin-bottom: 0.3em;
-}
-
-.btn-primary:focus {
-  box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2),
-    0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
-  outline: 0;
-}
-
+/* Recipes Grid results */
 #recipes-grid {
   margin: auto;
   width: 90vw;
@@ -170,9 +176,11 @@ body {
   width: 312px;
   height: 231px
 }
+/*END OF Recipes Grid results */
+
+/* END OF AutoIngredientSearch Component */
 
 /* Header component */
-
 header {
   margin: 1em;
 }
@@ -187,3 +195,86 @@ header nav ul {
 ul li a {
   text-decoration: none;
 }
+/* END OF Header component */
+
+/* Register component */
+#register-component {
+  display: flex;
+  flex-direction: column;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+#register-form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#register-form .input-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#register-form label {
+  position: absolute;
+  top: -15px;
+  left: 0px;
+  font-size: 16px;
+  color: #367af6;
+  text-align: center;
+  transition: all 0.5s ease-in-out;
+}
+
+#register-form input {
+  border: 0;
+  border-bottom: 1px solid #555;
+  background: transparent;
+  width: 100%;
+  padding: 8px 0 5px 0;
+  font-size: 16px;
+  color: black;
+  margin-bottom: 25px;
+}
+
+#register-form input:focus {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #e74c3c;
+}
+
+#register-form input:focus ~ label {
+  top: -10px;
+  font-size: 12px;
+}
+
+.register-input::placeholder {
+  font-size:1.2em;
+}
+
+::-webkit-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+::-moz-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+:-ms-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+::-ms-input-placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+
+::placeholder {
+  color: #e74c3c;
+  font-size: 1.2em;
+}
+/* END OF Register component */
