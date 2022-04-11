@@ -18,7 +18,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   border-radius: 6px;
   border: none;
-
+  cursor: pointer;
   color: #fff;
   background: linear-gradient(180deg, #4b91f7 0%, #367af6 100%);
   background-origin: border-box;
@@ -143,6 +143,7 @@ body {
   background-color: transparent;
   font-size: 1rem;
   border: none;
+  cursor: pointer;
 }
 
 /* Recipes Grid results */
@@ -249,6 +250,22 @@ ul li a {
   font-size: 12px;
 }
 
+.register-input::-webkit-input-placeholder {
+  font-size:1.2em;
+}
+
+.register-input::-moz-placeholder {
+  font-size:1.2em;
+}
+
+.register-input:-ms-input-placeholder {
+  font-size:1.2em;
+}
+
+.register-input::-ms-input-placeholder {
+  font-size:1.2em;
+}
+
 .register-input::placeholder {
   font-size:1.2em;
 }
@@ -276,5 +293,41 @@ ul li a {
 ::placeholder {
   color: #e74c3c;
   font-size: 1.2em;
+}
+
+#info-icon {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: -12px;
+  left: 70px;
+}
+
+.x-btn-modal {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background-color: #fff;
+    border-radius: 50%;
+    font-size: 1rem;
+    border: 1px dashed deepskyblue;
+    padding: 0 0.4em;
+    margin: 0.3em;
+    box-shadow: 5px 3px 15px -4px #4b91f7, -5px -3px 15px -4px #367af6;
+    cursor: pointer;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+#register-component ul {
+  padding: 0;
+}
+
+li.error-msg {
+  color: #e74c3c;
+  font-size: .8em;
+  list-style: none;
 }
 /* END OF Register component */

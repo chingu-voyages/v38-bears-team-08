@@ -1,5 +1,9 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState, FunctionComponent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Info from './icons8-info-48.png'
+import Modal from './Modal'
+import { registerUser } from '../firebase/firebase'
+import { AuthError } from 'firebase/auth'
 
 interface registerType {
   email: string
@@ -8,54 +12,109 @@ interface registerType {
   [key: string]: string
 }
 
-const errorObjectIsEmpty = (errorObject: registerType) => {
+type errorTypeProps = {
+  errors: registerType
+}
+
+type formErrorsType = {
+  email?: string
+  username?: string
+  password?: string
+  [key: string]: string | undefined
+}
+
+type serverErrorType = {
+  message: string
+}
+
+const passwordRequirements = `Password should have at least: one upper case and one lower case letters, one digit, one special character (e.g *!#@$%^&*-),
+and be between 8 and 20 characters.`
+
+const errorObjectIsEmpty = (errorObject: formErrorsType) => {
   return Object.keys(errorObject).every((key: string) => errorObject[key] === '')
 }
 
+const removeErrorsFromErrorObject = (errorObject: formErrorsType) => {
+  const errorObjectCopy = { ...errorObject }
+  for (const error in errorObjectCopy) {
+    if (Object.prototype.hasOwnProperty.call(errorObjectCopy, error)) {
+      errorObjectCopy[error] = ''
+    }
+  }
+  return errorObjectCopy
+}
+
 const checkFormForErrors = (error: registerType) => {
-  const errorObject = { email: '', username: '', password: '' }
+  const errorObject = {}
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailPattern.test(error.email)) {
-    Object.assign(errorObject, { email: 'Email is not valid' })
+    Object.assign(errorObject, { email: 'Email is not valid.' })
   }
 
   if (error.username.trim().length < 3) {
-    Object.assign(errorObject, { username: 'Username must be at least 3 characters' })
+    Object.assign(errorObject, {
+      username: 'Username must be at least 3 characters.'
+    })
   }
 
   const passwordPattern =
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/
   if (!passwordPattern.test(error.password)) {
     Object.assign(errorObject, {
-      password: `Password should have at least one upper case English letter,
-        at least one lower case English letter,
-        at least one digit,
-        at least one special character, (?=.*[]#!@$%^&*-)
-        and be between 8 and 20 characters in length.`
+      password: 'Password is not valid. Click/tap the info icon above.'
     })
   }
   return errorObject
 }
 
+const makeMessageHumanReadable = (message: string) => {
+  const newMessage = message.substring(message.lastIndexOf('/') + 1).slice(0, -2)
+  const errorMessage = newMessage.charAt(0).toUpperCase() + newMessage.slice(1)
+  const errorMessageArray = errorMessage.split('-')
+  const error = errorMessageArray.join(' ')
+  return error
+}
+
+const DisplayErrors: FunctionComponent<serverErrorType> = ({ message }) => {
+  const error = makeMessageHumanReadable(message)
+  return (
+    <>
+      <ul>
+        <li className='error-msg'>{error}</li>
+      </ul>
+    </>
+  )
+}
+
 const Register = () => {
+  const navigate = useNavigate()
   const [state, setState] = useState<registerType>({
     email: '',
     username: '',
     password: ''
   } as registerType)
 
-  const [error, setError] = useState<registerType>({
+  const [formErrors, setFormErrors] = useState<formErrorsType>({
     email: '',
     username: '',
     password: ''
   } as registerType)
+
+  const [serverErrors, setServerErrors] = useState<serverErrorType>()
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target
     setState({
       ...state,
       [target.name]: target.value
+    })
+    setFormErrors({
+      email: '',
+      username: '',
+      password: ''
     })
   }
 
@@ -69,25 +128,39 @@ const Register = () => {
 
     if (errorObjectIsEmpty(errorObject)) {
       try {
-        const data = await axios.post(
-          'https://aqueous-dawn-28459.herokuapp.com/api/auth/register',
-          {
-            email: state.email,
-            username: state.username,
-            password: state.password
-          }
-        )
-      } catch (error) {
-        console.log(error)
+        const newUser = await registerUser(state.username, state.email, state.password)
+        console.log('newUser created succesfully', newUser)
+
+        navigate('/login', {
+          replace: true,
+          state: { message: 'You have succesfully registered.' }
+        })
+      } catch (error: serverErrorType | any) {
+        setServerErrors(error)
       }
     } else {
-      setError(error => Object.assign(error, errorObject))
-      return void 0 // exit function
+      console.log('setFormErrors')
+      setFormErrors(prevErrors => ({ ...prevErrors, ...errorObject }))
+      const errObj = removeErrorsFromErrorObject(errorObject)
+      setState(prevState => ({
+        ...prevState,
+        ...(errObj as registerType)
+      }))
     }
   }
 
+  const handleClick = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+  }
+  console.log('serverErrors', serverErrors)
+  console.log('typeof serverErrors', typeof serverErrors)
   return (
     <div id='register-component'>
+      {serverErrors && <DisplayErrors message={serverErrors.message} />}
       <form id='register-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>
           <input
@@ -97,11 +170,10 @@ const Register = () => {
             value={state.email}
             id='email'
             onChange={handleChange}
-            placeholder='e.g. Email'
+            placeholder={formErrors.email?.length ? formErrors.email : 'e.g. Email'}
             required
           />
           <label htmlFor='email'>Email</label>
-          {error.email && <p className='error-msg'>{error.email}</p>}
         </div>
         <div className='input-container'>
           <input
@@ -111,11 +183,10 @@ const Register = () => {
             value={state.username}
             id='username'
             onChange={handleChange}
-            placeholder='e.g. ninja23'
+            placeholder={formErrors.username ? formErrors.username : 'e.g. ninja23'}
             required
           />
           <label htmlFor='username'>Username</label>
-          {error.username && <p className='error-msg'>{error.username}</p>}
         </div>
         <div className='input-container'>
           <input
@@ -125,11 +196,22 @@ const Register = () => {
             value={state.password}
             id='password'
             onChange={handleChange}
-            placeholder='between 8 and 20 characters lower and upper case letters and numbers'
+            placeholder={
+              formErrors.password ? formErrors.password : 'a strong one please'
+            }
             required
           />
+          <img
+            id='info-icon'
+            src={Info}
+            alt='password-information'
+            title={passwordRequirements}
+            onClick={handleClick}
+          />
+          <Modal isOpen={isModalOpen} closeModal={handleModalClose}>
+            {<p>{passwordRequirements}</p>}
+          </Modal>
           <label htmlFor='password'>Password</label>
-          {error.password && <p className='error-msg'>{error.password}</p>}
         </div>
         <button className='btn-primary' type='submit'>
           Register

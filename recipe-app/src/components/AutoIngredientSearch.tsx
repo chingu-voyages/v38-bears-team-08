@@ -118,7 +118,10 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
             ingredientsList.map(ingredient => (
               <span className='ingredient-tags-item' key={ingredient}>
                 {ingredient}{' '}
-                <button className='x-btn' onClick={e => removeIngredientFromList(e)}>
+                <button
+                  className='x-btn'
+                  onClick={e => removeIngredientFromList(e)}
+                  title='Remove ingredient'>
                   x
                 </button>
               </span>
@@ -140,7 +143,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
                 ))
               : null}
           </datalist>
-          <button className='btn-primary' type='submit'>
+          <button className='btn-primary' type='submit' title='Add ingredient'>
             Add ingredient
           </button>
         </form>
@@ -230,7 +233,11 @@ export default function GetRecipies() {
     <>
       <div id='search-component'>
         <AutoIngredientSearch setIngredients={setIngredients} />
-        <button className='btn-primary' onClick={handleClick} type='submit'>
+        <button
+          className='btn-primary'
+          onClick={handleClick}
+          type='submit'
+          title='Get recipes'>
           Get Recipes
         </button>
         {error && <p className='error-msg'>{error}</p>}

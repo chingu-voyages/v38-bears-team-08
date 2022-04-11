@@ -1,22 +1,39 @@
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { useFirebaseAuth } from '../FirebaseAuthContext'
+import { auth } from '../firebase/firebaseConfig'
+import { logout } from '../firebase/firebase'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
+  const user = useFirebaseAuth() || auth.currentUser
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    logout()
+    navigate('/', { replace: true })
+  }
   return (
     <header>
       <nav>
         <ul>
           <li>
-            <Link to='/'>Home</Link>
+            <NavLink to='/'>Home</NavLink>
           </li>
-          <li>
-            <Link to='/register'>Register</Link>
-          </li>
-          <li>
-            <Link to='/login'>Login</Link>
-          </li>
-          <li>
-            <Link to='/logout'>Logout</Link>
-          </li>
+          {!user ? (
+            <>
+              <li>
+                <NavLink to='/register'>Register</NavLink>
+              </li>
+              <li>
+                <NavLink to='/login'>Login</NavLink>
+              </li>
+            </>
+          ) : (
+            <li>
+              <a href='' onClick={handleLogout}>
+                Logout
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
