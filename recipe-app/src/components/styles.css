@@ -114,7 +114,12 @@ body {
 
 .error-msg {
   color: #e74c3c;
-  font-size: 1.2em;
+  font-size: 1.1em;
+  margin: 0 0 .5em 0;
+  line-height: 1;
+  text-align: center;
+  height: 30px;
+  margin: 0.6rem 0;
 }
 
 /* #ingredient-form input:valid ~ label */
@@ -184,6 +189,35 @@ body {
 /* Header component */
 header {
   margin: 1em;
+  background-color: #ECF3FF; /* #f4f4f4; */
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 10px #7599ff;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -ms-border-radius: 20px;
+  -o-border-radius: 20px;
+}
+
+header img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 1em;
+  box-shadow: 0px 0px 8px 1px #5757d8;
+}
+
+header h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #5757d8;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+header nav {
+  flex: auto
 }
 
 header nav ul {
@@ -191,10 +225,12 @@ header nav ul {
   list-style: none;
   justify-content: flex-end;
   gap: 1em;
+  padding: 0 .5em;
 }
 
 ul li a {
   text-decoration: none;
+  color: #4b91f7;
 }
 /* END OF Header component */
 
@@ -325,11 +361,6 @@ ul li a {
   padding: 0;
 }
 
-li.error-msg {
-  color: #e74c3c;
-  font-size: .8em;
-  list-style: none;
-}
 /* END OF Register component */
 
 /* Login Component */

@@ -12,10 +12,6 @@ interface registerType {
   [key: string]: string
 }
 
-type errorTypeProps = {
-  errors: registerType
-}
-
 type formErrorsType = {
   email?: string
   username?: string
@@ -23,7 +19,7 @@ type formErrorsType = {
   [key: string]: string | undefined
 }
 
-type serverErrorType = {
+type serverErrorsType = {
   message: string
 }
 
@@ -76,13 +72,11 @@ const makeMessageHumanReadable = (message: string) => {
   return error
 }
 
-const DisplayErrors: FunctionComponent<serverErrorType> = ({ message }) => {
+const DisplayErrors: FunctionComponent<serverErrorsType> = ({ message }) => {
   const error = makeMessageHumanReadable(message)
   return (
     <>
-      <ul>
-        <li className='error-msg'>{error}</li>
-      </ul>
+      <p className='error-msg'>{error}</p>
     </>
   )
 }
@@ -101,7 +95,7 @@ const Register = () => {
     password: ''
   } as registerType)
 
-  const [serverErrors, setServerErrors] = useState<serverErrorType>()
+  const [serverErrors, setServerErrors] = useState<serverErrorsType>()
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
@@ -135,7 +129,7 @@ const Register = () => {
           replace: true,
           state: { message: 'You have succesfully registered.' }
         })
-      } catch (error: serverErrorType | any) {
+      } catch (error: serverErrorsType | any) {
         setServerErrors(error)
       }
     } else {
@@ -160,7 +154,11 @@ const Register = () => {
   console.log('typeof serverErrors', typeof serverErrors)
   return (
     <div id='register-component'>
-      {serverErrors && <DisplayErrors message={serverErrors.message} />}
+      {serverErrors ? (
+        <DisplayErrors message={serverErrors.message} />
+      ) : (
+        <p className='error-msg'></p>
+      )}
       <form id='register-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>
           <input

@@ -1,11 +1,14 @@
-import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useState, FunctionComponent } from 'react'
 import { login } from '../firebase/firebase'
 
 interface loginDetailsType {
   email: string
   password: string
   [key: string]: string
+}
+
+type serverErrorsType = {
+  message: string
 }
 
 const errorObjectIsEmpty = (errorObject: loginDetailsType) => {
@@ -36,6 +39,23 @@ interface serverError {
   message: string
 }
 
+const makeMessageHumanReadable = (message: string) => {
+  const newMessage = message.substring(message.lastIndexOf('/') + 1).slice(0, -2)
+  const errorMessage = newMessage.charAt(0).toUpperCase() + newMessage.slice(1)
+  const errorMessageArray = errorMessage.split('-')
+  const error = errorMessageArray.join(' ')
+  return error
+}
+
+const DisplayErrors: FunctionComponent<serverErrorsType> = ({ message }) => {
+  const error = makeMessageHumanReadable(message)
+  return (
+    <>
+      <p className='error-msg'>{error}</p>
+    </>
+  )
+}
+
 const Login = () => {
   const [loginDetails, setLoginDetails] = useState<loginDetailsType>({
     email: '',
@@ -47,7 +67,7 @@ const Login = () => {
     password: ''
   })
 
-  const [serverError, setServerError] = useState<serverError> = ''
+  const [serverError, setServerError] = useState<serverErrorsType>()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -71,18 +91,23 @@ const Login = () => {
       try {
         const user = await login(loginDetails.email, loginDetails.password)
         console.log(user)
-      } catch (error) {
+      } catch (error: serverErrorsType | any) {
         setServerError(error)
         console.log(error)
       }
     } else {
-      setError(error => Object.assign(error, errorObject))
+      setError(error => ({ ...error, ...errorObject }))
       return void 0
     }
   }
 
   return (
     <div id='login-component'>
+      {serverError ? (
+        <DisplayErrors message={serverError.message} />
+      ) : (
+        <p className='error-msg'></p>
+      )}
       <form id='login-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>
           <input
@@ -95,7 +120,6 @@ const Login = () => {
             required
           />
           <label htmlFor='email'>Email</label>
-          {error.email && <p className='error-msg'>{error.email}</p>}
         </div>
         <div className='input-container'>
           <input
@@ -108,7 +132,6 @@ const Login = () => {
             required
           />
           <label htmlFor='username'>Password</label>
-          {error.password && <p className='error-msg'>{error.password}</p>}
         </div>
         <button className='btn-primary'>Login</button>
       </form>

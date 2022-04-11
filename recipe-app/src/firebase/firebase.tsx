@@ -1,5 +1,4 @@
 import {
-  Auth,
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
@@ -8,7 +7,7 @@ import {
   setPersistence,
   browserSessionPersistence
 } from 'firebase/auth'
-import { auth } from './firebaseConfig'
+import { db, auth } from './firebaseConfig'
 
 type errorObject = {
   message: string
@@ -27,6 +26,7 @@ const registerUser = async (username: string, email: string, password: string) =
       code: 200
     }
   } catch (error: errorObject | any) {
+    console.log()
     console.log('registerUser error', error)
     throw new Error(error)
   }
@@ -39,7 +39,9 @@ const login = async (email: string, password: string) => {
     console.log('currentUser', currentUser)
     return currentUser.user
   } catch (error: errorObject | any) {
-    console.log(error)
+    console.log('error.message', error.message)
+    console.log('error.code', error.code)
+    console.log('error.name', error.name)
     throw new Error(error.message)
   }
 }

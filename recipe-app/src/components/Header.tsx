@@ -3,6 +3,7 @@ import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
 import { logout } from '../firebase/firebase'
 import { useNavigate } from 'react-router-dom'
+import Logo from './berries.jpg'
 
 const Header = () => {
   const user = useFirebaseAuth() || auth.currentUser
@@ -13,6 +14,8 @@ const Header = () => {
   }
   return (
     <header>
+      <img src={Logo} alt='Logo' />
+      <h1>Recipe App</h1>
       <nav>
         <ul>
           <li>
