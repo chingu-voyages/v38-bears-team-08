@@ -41,7 +41,7 @@ body {
 /* END OF General styling */
 
 
-/* Home (AutoIngredientSearch component */
+/* Home (AutoIngredientSearch component) */
 #search-component{
   display: flex;
   flex-direction: column;
@@ -177,7 +177,7 @@ body {
   width: 312px;
   height: 231px
 }
-/*END OF Recipes Grid results */
+/* END OF Recipes Grid results */
 
 /* END OF AutoIngredientSearch Component */
 
@@ -331,3 +331,62 @@ li.error-msg {
   list-style: none;
 }
 /* END OF Register component */
+
+/* Login Component */
+
+#login-component {
+  display: flex;
+  flex-direction: column;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#login-form .input-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#login-form label {
+  position: absolute;
+  top: -15px;
+  left: 0px;
+  font-size: 16px;
+  color: #367af6;
+  text-align: center;
+  transition: all 0.5s ease-in-out;
+}
+
+#login-form input {
+  border: 0;
+  border-bottom: 1px solid #555;
+  background: transparent;
+  width: 100%;
+  padding: 8px 0 5px 0;
+  font-size: 16px;
+  color: black;
+  margin-bottom: 25px;
+}
+
+#login-form input:focus {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #e74c3c;
+}
+
+#login-form input:focus~label {
+  top: -10px;
+  font-size: 12px;
+}
+
+.login-input::placeholder {
+  font-size: 1.2em;
+}
+
+/* END of Login Component */

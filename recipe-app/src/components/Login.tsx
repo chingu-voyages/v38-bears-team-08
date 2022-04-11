@@ -1,37 +1,54 @@
+import axios from 'axios'
 import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import { login } from '../firebase/firebase'
-import { auth } from '../firebase/firebaseConfig'
-import { useFirebaseAuth } from '../FirebaseAuthContext'
 
 interface loginDetailsType {
   email: string
   password: string
+  [key: string]: string
 }
 
-interface LocationParams {
-  pathname: string
-  state: {
-    message: string
-  } | null
-  search: string
-  hash: string
-  key: string
+const errorObjectIsEmpty = (errorObject: loginDetailsType) => {
+  return Object.keys(errorObject).every((key: string) => errorObject[key] === '')
+}
+
+const checkFormForErrors = (error: loginDetailsType) => {
+  const errorObject = { email: '', password: '' }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailPattern.test(error.email)) {
+    errorObject.email = 'Email is not valid'
+  }
+
+  const passwordPattern =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$/
+  if (!passwordPattern.test(error.password)) {
+    errorObject.password = `Password should have at least one upper case English letter,
+        at least one lower case English letter,
+        at least one digit,
+        at least one special character, (?=.*[]#!@$%^&*-)
+        and be between 8 and 20 characters in length.`
+  }
+  return errorObject
+}
+
+interface serverError {
+  message: string
 }
 
 const Login = () => {
-  const location = useLocation() as LocationParams
-  const user = useFirebaseAuth() || auth.currentUser
-  const state = location?.state || null
-
-  console.log('Login user', user?.displayName)
-
   const [loginDetails, setLoginDetails] = useState<loginDetailsType>({
     email: '',
     password: ''
   })
 
-  console.log('login router state', state)
+  const [error, setError] = useState<loginDetailsType>({
+    email: '',
+    password: ''
+  })
+
+  const [serverError, setServerError] = useState<serverError> = ''
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
 
@@ -43,35 +60,59 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const { email, password } = loginDetails
-    const data = await login(email, password)
-    console.log('data', data)
+
+    console.log('loginDetails', loginDetails)
+    const errorObject = checkFormForErrors(loginDetails)
+    console.log('errorObject', errorObject)
+
+    console.log('errorObjectIsEmpty', errorObjectIsEmpty(errorObject))
+
+    if (errorObjectIsEmpty(errorObject)) {
+      try {
+        const user = await login(loginDetails.email, loginDetails.password)
+        console.log(user)
+      } catch (error) {
+        setServerError(error)
+        console.log(error)
+      }
+    } else {
+      setError(error => Object.assign(error, errorObject))
+      return void 0
+    }
   }
+
   return (
-    <>
-      <h1>Login</h1>
-      {user?.displayName || 'Please login'}
-      <p>{state && state.message !== '' ? state.message : null}</p>
-      <form action='' onSubmit={handleSubmit}>
-        <label htmlFor='email'>Email</label>
-        <input
-          type='email'
-          id='email'
-          name='email'
-          value={loginDetails.email}
-          onChange={handleChange}
-        />
-        <label htmlFor='username'>Username</label>
-        <input
-          type='password'
-          name='password'
-          id='password'
-          value={loginDetails.password}
-          onChange={handleChange}
-        />
-        <button id='login-btn'>Login</button>
+    <div id='login-component'>
+      <form id='login-form' action='' onSubmit={handleSubmit}>
+        <div className='input-container'>
+          <input
+            className='login-input'
+            type='email'
+            id='email'
+            name='email'
+            value={loginDetails.email}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor='email'>Email</label>
+          {error.email && <p className='error-msg'>{error.email}</p>}
+        </div>
+        <div className='input-container'>
+          <input
+            className='login-input'
+            type='password'
+            name='password'
+            id='password'
+            value={loginDetails.password}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor='username'>Password</label>
+          {error.password && <p className='error-msg'>{error.password}</p>}
+        </div>
+        <button className='btn-primary'>Login</button>
       </form>
-    </>
+    </div>
   )
 }
 
