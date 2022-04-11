@@ -3,7 +3,7 @@ import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
 import { logout } from '../firebase/firebase'
 import { useNavigate } from 'react-router-dom'
-import Logo from './berries.jpg'
+import Logo from './berries_optimized.jpg'
 
 const Header = () => {
   const user = useFirebaseAuth() || auth.currentUser
