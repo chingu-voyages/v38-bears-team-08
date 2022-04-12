@@ -12,6 +12,7 @@ const Header = () => {
     logout()
     navigate('/', { replace: true })
   }
+  // TODO: Add class for active link
   return (
     <header>
       <img src={Logo} alt='Logo' />
