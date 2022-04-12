@@ -77,6 +77,7 @@ const Login = () => {
       <form id='login-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>
           <input
+            autoFocus
             className='login-input'
             type='email'
             id='email'

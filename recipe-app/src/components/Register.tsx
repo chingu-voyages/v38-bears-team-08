@@ -162,6 +162,7 @@ const Register = () => {
       <form id='register-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>
           <input
+            autoFocus
             className='register-input'
             type='email'
             name='email'
