@@ -1,6 +1,7 @@
-import React, { useState, FunctionComponent } from 'react'
+import React, { useState, FC } from 'react'
 import { login } from '../firebase/firebase'
-
+import Modal from './Modal'
+import ResetPassword from './ResetPassword'
 interface loginDetailsType {
   email: string
   password: string
@@ -8,10 +9,6 @@ interface loginDetailsType {
 }
 
 interface serverErrorsType {
-  message: string
-}
-
-interface serverError {
   message: string
 }
 
@@ -23,7 +20,7 @@ const makeMessageHumanReadable = (message: string) => {
   return error
 }
 
-const DisplayErrors: FunctionComponent<serverErrorsType> = ({ message }) => {
+const DisplayErrors: FC<serverErrorsType> = ({ message }) => {
   const error = makeMessageHumanReadable(message)
   return (
     <>
@@ -39,6 +36,7 @@ const Login = () => {
   })
 
   const [serverError, setServerError] = useState<serverErrorsType>()
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -59,6 +57,14 @@ const Login = () => {
       setServerError(error)
       console.log(error)
     }
+  }
+
+  const handleClick = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
   }
 
   return (
@@ -95,6 +101,12 @@ const Login = () => {
         </div>
         <button className='btn-primary'>Login</button>
       </form>
+      <Modal isOpen={isModalOpen} closeModal={handleModalClose}>
+        <ResetPassword />
+      </Modal>
+      <button className='btn-primary' onClick={handleClick}>
+        I forgot my password
+      </button>
     </div>
   )
 }

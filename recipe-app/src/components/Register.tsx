@@ -12,14 +12,14 @@ interface registerType {
   [key: string]: string
 }
 
-type formErrorsType = {
+interface formErrorsType {
   email?: string
   username?: string
   password?: string
   [key: string]: string | undefined
 }
 
-type serverErrorsType = {
+interface serverErrorsType {
   message: string
 }
 
