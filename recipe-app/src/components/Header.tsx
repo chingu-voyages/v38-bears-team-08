@@ -12,23 +12,41 @@ const Header = () => {
     logout()
     navigate('/', { replace: true })
   }
-  // TODO: Add class for active link
+
   return (
     <header>
-      <img src={Logo} alt='Logo' />
+      <img src={Logo} alt='Logo' title='Logo' />
       <h1>Recipe App</h1>
       <nav>
         <ul>
           <li>
-            <NavLink to='/'>Home</NavLink>
+            <NavLink
+              to='/'
+              style={({ isActive }) => ({
+                color: isActive ? '#08ce01' : '#4b91f7'
+              })}>
+              Home
+            </NavLink>
           </li>
           {!user ? (
             <>
               <li>
-                <NavLink to='/register'>Register</NavLink>
+                <NavLink
+                  to='/register'
+                  style={({ isActive }) => ({
+                    color: isActive ? '#08ce01' : '#4b91f7'
+                  })}>
+                  Register
+                </NavLink>
               </li>
               <li>
-                <NavLink to='/login'>Login</NavLink>
+                <NavLink
+                  to='/login'
+                  style={({ isActive }) => ({
+                    color: isActive ? '#08ce01' : '#4b91f7'
+                  })}>
+                  Login
+                </NavLink>
               </li>
             </>
           ) : (
