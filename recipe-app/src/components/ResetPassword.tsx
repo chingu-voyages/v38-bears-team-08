@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react'
+import React, { useState, useEffect, useRef, FC } from 'react'
 import { resetPassword } from '../firebase/firebase'
 import { useNavigate } from 'react-router-dom'
 
@@ -25,9 +25,13 @@ const DisplayErrors: FC<serverErrorsType> = ({ message }) => {
 
 const ResetPassword = () => {
   const [serverError, setServerError] = useState<serverErrorsType>()
-
   const [resetEmailInput, setResetEmailInput] = useState<string>('')
   const navigate = useNavigate()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   const handleResetEmailSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -55,8 +59,8 @@ const ResetPassword = () => {
       )}
       <form id='reset-password-form' onSubmit={handleResetEmailSubmit}>
         <div className='input-container'>
-          <label htmlFor='reset-email'>Email</label>
           <input
+            ref={inputRef}
             className='reset-email-input'
             type={'email'}
             id='reset-email'
@@ -65,6 +69,7 @@ const ResetPassword = () => {
             value={resetEmailInput}
             required
           />
+          <label htmlFor='reset-email'>Email</label>
         </div>
         <button className='btn-primary reset-password-btn' type='submit'>
           Send reset password
