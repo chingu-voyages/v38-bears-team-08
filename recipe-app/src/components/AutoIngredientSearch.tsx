@@ -6,6 +6,7 @@ import {
   SyntheticEvent,
   FunctionComponent
 } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
@@ -191,15 +192,17 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
   return (
     <div id='recipes-grid'>
       {shownRecipes.map((recipe: recipeType, index: number) => (
-        <div
-          ref={shownRecipes.length - 1 === index ? lastRecipeRef : null}
-          id='recipe'
-          key={recipe.id}>
-          <img id='recipe-image' src={recipe.image} alt={recipe.title} />
-          <span id='recipe-title'>
-            {recipe.title.length >= 40 ? `${recipe.title.slice(0, 40)}...` : recipe.title}
-          </span>
-        </div>
+        <Link key={recipe.id} to={`${recipe.id}`} id='recipe-link'>
+          <div
+            ref={shownRecipes.length - 1 === index ? lastRecipeRef : null}
+            id='recipe'
+            >
+            <img id='recipe-image' src={recipe.image} alt={recipe.title} />
+            <span id='recipe-title'>
+              {recipe.title.length >= 40 ? `${recipe.title.slice(0, 40)}...` : recipe.title}
+            </span>
+          </div>
+        </Link>
       ))}
     </div>
   )
