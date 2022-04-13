@@ -90,7 +90,7 @@ const RecipePage = () => {
     }
 
     loadRecipeInfo()
-  }, [])
+  }, [id])
 
   return (
     <div id='recipe-page'>
