@@ -4,6 +4,11 @@ import { useParams } from 'react-router-dom'
 import { MdTimer , MdOutlineToday} from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 
+interface stepType {
+  number: number
+  step: string
+}
+
 interface recipeDataType {
   title: string
   summary: string
@@ -19,6 +24,7 @@ interface recipeDataType {
   glutenFree: boolean
   image: string
   ingredients: [string]
+  steps: [stepType]
 }
 
 interface ingredientType {
@@ -55,13 +61,14 @@ const RecipePage = () => {
     glutenFree: false,
     image: '',
     ingredients: [''],
+    steps: [{ number: 0, step: ''}]
   })
   console.log(recipeData)
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
       const {
-        title, summary, servings, dishTypes, dairyFree, sourceName, sourceUrl, healthScore, readyInMinutes, vegan, vegetarian, glutenFree, image, extendedIngredients
+        title, summary, servings, dishTypes, dairyFree, sourceName, sourceUrl, healthScore, readyInMinutes, vegan, vegetarian, glutenFree, image, extendedIngredients, analyzedInstructions
       }  = await getRecipeInfo(id)
       setRecipeData({
         title,
@@ -78,6 +85,7 @@ const RecipePage = () => {
         glutenFree,
         image,
         ingredients: extendedIngredients.map((ingredient : ingredientType) => ingredient.original),
+        steps: analyzedInstructions[0].steps.map((instruction : stepType) => ({number: instruction.number, step: instruction.step}))
       })
     }
 
@@ -120,6 +128,13 @@ const RecipePage = () => {
         </div>
         <div id="recipe-steps-wrapper">
           <h3 id="recipe-steps-subheading">Instructions</h3>
+          <ol id="recipe-steps">
+            {
+              recipeData.steps.map((instruction: stepType) => (
+                <li id="recipe-step">{instruction.step}</li>
+              ))
+            }
+          </ol>
         </div>
       </div>
     </div>
