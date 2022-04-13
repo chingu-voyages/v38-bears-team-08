@@ -7,7 +7,7 @@ import {
   setPersistence,
   browserSessionPersistence
 } from 'firebase/auth'
-import { db, auth } from './firebaseConfig'
+import { auth } from './firebaseConfig'
 
 type errorObject = {
   message: string

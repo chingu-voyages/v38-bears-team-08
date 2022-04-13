@@ -10,6 +10,8 @@ import axios from 'axios'
 import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
 
+console.log('apiKey', process.env.REACT_APP_API_KEY)
+
 type optionType = {
   label: string
   value: string
@@ -129,6 +131,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
         </div>
         <form id='ingredient-form' onSubmit={handleSubmit}>
           <input
+            autoFocus
             id='ingredients'
             list='ingredients-list'
             value={ingredient}
@@ -214,8 +217,11 @@ export default function GetRecipies() {
     console.log('ingredients', ingredients)
     if (ingredients.length > 0) {
       try {
+        // const url = `/.netlify/functions/fetchRecipies?ingredients=${ingredients}`
+        // const rsp = await axios.get(url)
+        // console.log('rsp', rsp)
         const response = await axios.get(
-          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
+          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=${process.env.REACT_APP_API_KEY}`
         )
         setRecipies(response.data)
         console.log('handleSubmit in GetRecipies', response.data)

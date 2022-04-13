@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import Info from './icons8-info-48.png'
 import Modal from './Modal'
 import { registerUser } from '../firebase/firebase'
-import { AuthError } from 'firebase/auth'
-
 interface registerType {
   email: string
   username: string

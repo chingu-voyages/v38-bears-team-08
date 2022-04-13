@@ -98,7 +98,7 @@ const Login = () => {
             onChange={handleChange}
             required
           />
-          <label htmlFor='username'>Password</label>
+          <label htmlFor='password'>Password</label>
         </div>
         <button className='btn-primary'>Login</button>
       </form>
