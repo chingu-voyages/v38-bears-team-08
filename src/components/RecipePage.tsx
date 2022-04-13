@@ -131,7 +131,7 @@ const RecipePage = () => {
           <ol id="recipe-steps">
             {
               recipeData.steps.map((instruction: stepType) => (
-                <li id="recipe-step">{instruction.step}</li>
+                <li id="recipe-step" key={instruction.number}>{instruction.step}</li>
               ))
             }
           </ol>
