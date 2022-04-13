@@ -18,6 +18,11 @@ interface recipeDataType {
   vegetarian: boolean
   glutenFree: boolean
   image: string
+  ingredients: [string]
+}
+
+interface ingredientType {
+  original: string 
 }
 
 
@@ -48,14 +53,15 @@ const RecipePage = () => {
     vegan: false,
     vegetarian: false,
     glutenFree: false,
-    image: ''
+    image: '',
+    ingredients: [''],
   })
   console.log(recipeData)
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
       const {
-        title, summary, servings, dishTypes, dairyFree, sourceName, sourceUrl, healthScore, readyInMinutes, vegan, vegetarian, glutenFree, image
+        title, summary, servings, dishTypes, dairyFree, sourceName, sourceUrl, healthScore, readyInMinutes, vegan, vegetarian, glutenFree, image, extendedIngredients
       }  = await getRecipeInfo(id)
       setRecipeData({
         title,
@@ -71,6 +77,7 @@ const RecipePage = () => {
         vegetarian,
         glutenFree,
         image,
+        ingredients: extendedIngredients.map((ingredient : ingredientType) => ingredient.original),
       })
     }
 
@@ -98,8 +105,21 @@ const RecipePage = () => {
             <span id="recipe-info-dishType">{recipeData.dishType}</span>
           </div>
         </div>
-        <div className="recipe-summary-wrapper">
+        <div id="recipe-summary-wrapper">
           <span id="recipe-summary" dangerouslySetInnerHTML={{__html: recipeData.summary}}></span>
+        </div>
+        <div id="recipe-ingredients-wrapper">
+          <h3 id="recipe-ingredients-subheading">Ingredients</h3>
+          <ul id="recipe-ingredients-list">
+          {
+            recipeData.ingredients.map((ingredient : string) => (
+                <li id="recipe-ingredient" key={ingredient}>{ingredient}</li>
+            ))
+          }
+          </ul>
+        </div>
+        <div id="recipe-steps-wrapper">
+          <h3 id="recipe-steps-subheading">Instructions</h3>
         </div>
       </div>
     </div>
