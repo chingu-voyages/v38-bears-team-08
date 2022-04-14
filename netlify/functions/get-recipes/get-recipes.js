@@ -5,14 +5,15 @@ const qs = require('qs')
 
 const handler = async function (event) {
   // apply our function to the queryStringParameters and assign it to a variable
-  const { ingredients } = qs.stringify(event.queryStringParameters)
-  console.log('ingredients', ingredients)
+  const queryStringParameters = qs.stringify(event.queryStringParameters)
+  console.log('queryStringParameters', queryStringParameters)
   // Get env var values defined in our Netlify site UI
 
   // TODO: customize your URL and API keys set in the Netlify Dashboard
   // this is secret too, your frontend won't see this
-  const { REACT_APP_API_KEY } = process.env
-  const URL = `https://api.spoonacular.com/recipes/findByIngredients?${ingredients}&number=100&apiKey=${REACT_APP_API_KEY}`
+  const { API_URL, API_TOKEN } = process.env
+
+  const URL = API_URL + `?${queryStringParameters}&number=100&apiKey=${API_TOKEN}`
 
   console.log('Constructed URL is ...', URL)
 
