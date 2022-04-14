@@ -224,7 +224,7 @@ export default function GetRecipies() {
         // const rsp = await axios.get(url)
         // console.log('rsp', rsp)
         const response = await axios.get(
-          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=${process.env.REACT_APP_API_KEY}`
+          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
         )
         setRecipies(response.data)
         console.log('handleSubmit in GetRecipies', response.data)
