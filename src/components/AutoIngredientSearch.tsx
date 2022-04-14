@@ -171,7 +171,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
       }
     })
     if (node) observer.current.observe(node)
-  }, [])
+  }, [page])
 
   useEffect(() => {
     const loadNewRecipes = () => {

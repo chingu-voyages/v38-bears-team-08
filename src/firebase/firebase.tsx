@@ -9,6 +9,7 @@ import {
 } from 'firebase/auth'
 import { auth } from './firebaseConfig'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type errorObject = {
   message: string
   code: number
