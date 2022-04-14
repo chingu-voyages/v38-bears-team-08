@@ -63,7 +63,7 @@ const Login = () => {
     setIsModalOpen(true)
   }
 
-  const handleModalClose = () => {
+  const closeModal = () => {
     setIsModalOpen(false)
   }
 
@@ -102,8 +102,8 @@ const Login = () => {
         </div>
         <button className='btn-primary'>Login</button>
       </form>
-      <Modal isOpen={isModalOpen} closeModal={handleModalClose}>
-        <ResetPassword />
+      <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        <ResetPassword closeModal={closeModal} />
       </Modal>
       <button className='btn-primary' onClick={handleClick}>
         I forgot my password
