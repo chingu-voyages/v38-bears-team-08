@@ -1,7 +1,6 @@
 import { useNavigate, Outlet } from 'react-router-dom'
 import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
-import { setPersistence, browserLocalPersistence } from 'firebase/auth'
 import React from 'react'
 
 interface ProtectedRouteProps {

@@ -26,7 +26,6 @@ type ingredientType = {
 interface AutoIngredientSearchProps {
   setIngredients: (recipes: string[]) => void
 }
-
 interface recipeType {
   id: number
   title: string
@@ -34,6 +33,14 @@ interface recipeType {
 }
 interface RecipiesViewProps {
   recipes: recipeType[]
+}
+
+const autoComplete = (ingredient: string) => {
+  const matchingIngredients = ingredientOptions.filter(
+    (ingredientOption: ingredientType) =>
+      ingredient === ingredientOption.name.slice(0, ingredient.length)
+  )
+  return matchingIngredients.slice(0, 10)
 }
 
 /**
@@ -48,18 +55,10 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
   const [options, setOptions] = useState<optionType[]>([])
   const [error, setError] = useState('')
 
-  const autoComplete = () => {
-    const matchingIngredients = ingredientOptions.filter(
-      (ingredientOption: ingredientType) =>
-        ingredient === ingredientOption.name.slice(0, ingredient.length)
-    )
-    return matchingIngredients.slice(0, 10)
-  }
-
   useEffect(() => {
     const fetchRecipies = async () => {
       try {
-        const matchingIngredients = autoComplete()
+        const matchingIngredients = autoComplete(ingredient)
         console.log('handleChange', matchingIngredients)
         const opts = matchingIngredients.map((item: ingredientType) => ({
           label: item.name,
@@ -81,7 +80,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 
   useEffect(() => {
     setIngredients([...ingredientsList])
-  }, [ingredientsList])
+  }, [ingredientsList, setIngredients])
 
   const removeIngredientFromList = (e: SyntheticEvent) => {
     const element = e.currentTarget as HTMLInputElement
@@ -196,13 +195,12 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
     <div id='recipes-grid'>
       {shownRecipes.map((recipe: recipeType, index: number) => (
         <Link key={recipe.id} to={`${recipe.id}`} id='recipe-link'>
-          <div
-            ref={shownRecipes.length - 1 === index ? lastRecipeRef : null}
-            id='recipe'
-            >
+          <div ref={shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe'>
             <img id='recipe-image' src={recipe.image} alt={recipe.title} />
             <span id='recipe-title'>
-              {recipe.title.length >= 40 ? `${recipe.title.slice(0, 40)}...` : recipe.title}
+              {recipe.title.length >= 40
+                ? `${recipe.title.slice(0, 40)}...`
+                : recipe.title}
             </span>
           </div>
         </Link>
@@ -220,14 +218,15 @@ export default function GetRecipies() {
     console.log('ingredients', ingredients)
     if (ingredients.length > 0) {
       try {
-        // const url = `/.netlify/functions/fetchRecipies?ingredients=${ingredients}`
-        // const rsp = await axios.get(url)
-        // console.log('rsp', rsp)
-        const response = await axios.get(
-          `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
-        )
-        setRecipies(response.data)
-        console.log('handleSubmit in GetRecipies', response.data)
+        const url = `/.netlify/functions/get-recipes?ingredients=${ingredients}`
+        // const url = `/.netlify/functions/todo?id=1`
+        const rsp = await axios.get(url)
+        console.log('rsp', rsp)
+        // const response = await axios.get(
+        //   `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredients}&number=100&apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
+        // )
+        // setRecipies(response.data)
+        // console.log('handleSubmit in GetRecipies', response.data)
         setError('')
       } catch (err) {
         setError('Error: No recipes found')
