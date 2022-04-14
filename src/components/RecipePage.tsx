@@ -1,6 +1,8 @@
 import { useState ,useEffect } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { useFirebaseAuth } from '../FirebaseAuthContext'
+import { auth } from '../firebase/firebaseConfig'
+import { useParams, useNavigate } from 'react-router-dom'
 import { MdTimer , MdOutlineToday} from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 
@@ -30,7 +32,6 @@ interface recipeDataType {
 interface ingredientType {
   original: string 
 }
-
 
 const getRecipeInfo = async (id : string | undefined) => {
   try {
@@ -63,7 +64,9 @@ const RecipePage = () => {
     ingredients: [''],
     steps: [{ number: 0, step: ''}]
   })
-  console.log(recipeData)
+
+  const user = useFirebaseAuth() || auth.currentUser
+  const [recipeSaved, setRecipeSaved] = useState<boolean>(false)
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
@@ -92,49 +95,76 @@ const RecipePage = () => {
     loadRecipeInfo()
   }, [id])
 
+  const navigate = useNavigate()
+
+  const saveRecipe = () => {
+    if (user) {
+      setRecipeSaved(true)
+      setTimeout(() => {
+        setRecipeSaved(false)
+      }, 5000)
+      console.log('user recipe has been added to the db')
+    } else {
+      navigate('/login', {state: {message: `Must be logged in to save ${recipeData.title}`}})
+    }
+   
+  }
+
+  const SaveSuccessMessage = () => {
+    if (recipeSaved) {
+      return <span id="save-success-message" >{recipeData.title} recipe has been saved</span>
+    } else {
+      return null
+    }
+  } 
+
   return (
     <div id='recipe-page'>
+      <SaveSuccessMessage />
       <div id="recipe-info">
-        <h2 id="recipe-info-title">{recipeData.title}</h2>
-        <div id="recipe-info-image-wrapper">
+        <div id="recipe-main">
+          <h2 id="recipe-info-title">{recipeData.title}</h2>
+          <button id="recipe-save-btn" onClick={saveRecipe}>Save Recipe</button>
           <img src={recipeData.image} alt={recipeData.title} id="recipe-info-image" />
-        </div>
-        <div id="recipe-info-cooking">
-          <div id="recipe-info-time-wrapper">
-            <MdTimer id='recipe-info-time-icon'/>
-            <span id="recipe-info-time">{recipeData.readyInMinutes} mins</span>
+          <div id="recipe-info-cooking">
+            <div id="recipe-info-time-wrapper"  className="recipe-data">
+              <MdTimer id='recipe-info-time-icon'/>
+              <span id="recipe-info-time" className="recipe-data-text">{recipeData.readyInMinutes} mins</span>
+            </div>
+            <div id="recipe-info-servings-wrapper" className="recipe-data">
+              <GiForkKnifeSpoon id="recipe-info-servings-icon" />
+              <span id="recipe-info-servings" className="recipe-data-text">{recipeData.servings} {recipeData.servings === 1 ? 'serving' : 'servings'}</span>
+            </div>
+            <div id="recipe-info-dishType-wrapper" className="recipe-data">
+              <MdOutlineToday id="recipe-info-dishType-icon" />
+              <span id="recipe-info-dishType" className="recipe-data-text">{recipeData.dishType.slice(0, 1).toUpperCase()}{recipeData.dishType.slice(1)}</span>
+            </div>
           </div>
-          <div id="recipe-info-servings-wrapper">
-            <GiForkKnifeSpoon id="recipe-info-servings-icon" />
-            <span id="recipe-info-servings">{recipeData.servings}</span>
-          </div>
-          <div id="recipe-info-dishType-wrapper">
-            <MdOutlineToday id="recipe-info-dishType-icon" />
-            <span id="recipe-info-dishType">{recipeData.dishType}</span>
+          <div id="recipe-summary-wrapper">
+            <span id="recipe-summary" dangerouslySetInnerHTML={{__html: recipeData.summary}}></span>
           </div>
         </div>
-        <div id="recipe-summary-wrapper">
-          <span id="recipe-summary" dangerouslySetInnerHTML={{__html: recipeData.summary}}></span>
-        </div>
-        <div id="recipe-ingredients-wrapper">
-          <h3 id="recipe-ingredients-subheading">Ingredients</h3>
-          <ul id="recipe-ingredients-list">
-          {
-            recipeData.ingredients.map((ingredient : string) => (
-                <li id="recipe-ingredient" key={ingredient}>{ingredient}</li>
-            ))
-          }
-          </ul>
-        </div>
-        <div id="recipe-steps-wrapper">
-          <h3 id="recipe-steps-subheading">Instructions</h3>
-          <ol id="recipe-steps">
+        <div id="recipe-details">
+          <div id="recipe-ingredients-wrapper">
+            <h3 id="recipe-ingredients-subheading">Ingredients</h3>
+            <ul id="recipe-ingredients-list">
             {
-              recipeData.steps.map((instruction: stepType) => (
-                <li id="recipe-step" key={instruction.number}>{instruction.step}</li>
+              recipeData.ingredients.map((ingredient : string) => (
+                  <li id="recipe-ingredient" className="recipe-list-item" key={ingredient}>{ingredient}</li>
               ))
             }
-          </ol>
+            </ul>
+          </div>
+          <div id="recipe-steps-wrapper">
+            <h3 id="recipe-steps-subheading">Instructions</h3>
+            <ol id="recipe-steps">
+              {
+                recipeData.steps.map((instruction: stepType) => (
+                  <li id="recipe-step" className="recipe-list-item" key={instruction.number}>{instruction.step}</li>
+                ))
+              }
+            </ol>
+          </div>
         </div>
       </div>
     </div>
