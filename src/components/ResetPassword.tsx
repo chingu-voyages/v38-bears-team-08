@@ -1,9 +1,12 @@
 import React, { useState, FC } from 'react'
 import { resetPassword } from '../firebase/firebase'
-import { useNavigate } from 'react-router-dom'
 
 interface serverErrorsType {
   message: string
+}
+
+interface closeModalType {
+  closeModal: () => void
 }
 
 const makeMessageHumanReadable = (message: string) => {
@@ -23,20 +26,22 @@ const DisplayErrors: FC<serverErrorsType> = ({ message }) => {
   )
 }
 
-const ResetPassword = () => {
+const ResetPassword: FC<closeModalType> = ({ closeModal }) => {
   const [serverError, setServerError] = useState<serverErrorsType>()
   const [resetEmailInput, setResetEmailInput] = useState<string>('')
-  const navigate = useNavigate()
 
   const handleResetEmailSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
     try {
       await resetPassword(resetEmailInput)
-      navigate('/login', { replace: true })
+      setResetEmailInput('Your password reset email has been sent')
+      const timeout = setTimeout(() => {
+        closeModal()
+        clearTimeout(timeout)
+      }, 3000)
     } catch (error: serverErrorsType | any) {
       setServerError(error)
-      console.log(error)
     }
   }
 

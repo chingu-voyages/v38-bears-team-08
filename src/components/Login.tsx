@@ -70,11 +70,9 @@ const Login = () => {
     event.preventDefault()
 
     try {
-      const user = await login(loginDetails.email, loginDetails.password)
-      console.log(user)
+      await login(loginDetails.email, loginDetails.password)
     } catch (error: serverErrorsType | any) {
       setServerError(error)
-      console.log(error)
     }
   }
 
@@ -82,7 +80,7 @@ const Login = () => {
     setIsModalOpen(true)
   }
 
-  const handleModalClose = () => {
+  const closeModal = () => {
     setIsModalOpen(false)
   }
 
@@ -121,8 +119,8 @@ const Login = () => {
         </div>
         <button className='btn-primary'>Login</button>
       </form>
-      <Modal isOpen={isModalOpen} closeModal={handleModalClose}>
-        <ResetPassword />
+      <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        <ResetPassword closeModal={closeModal} />
       </Modal>
       <button className='btn-primary' onClick={handleClick}>
         I forgot my password

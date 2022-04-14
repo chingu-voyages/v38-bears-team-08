@@ -1,7 +1,6 @@
 import { useNavigate, Outlet } from 'react-router-dom'
 import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
-import { setPersistence, browserLocalPersistence } from 'firebase/auth'
 import React from 'react'
 
 interface ProtectedRouteProps {
@@ -20,9 +19,8 @@ const ProtectedRoute = ({
     if (user !== null) {
       navigate(redirectPath, { replace: true })
     }
-  }, [user])
+  }, [navigate, redirectPath, user])
 
-  console.log('ProtectedRoute user', user)
   return children ? children : <Outlet />
 }
 
