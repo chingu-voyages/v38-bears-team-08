@@ -20,9 +20,8 @@ const ProtectedRoute = ({
     if (user !== null) {
       navigate(redirectPath, { replace: true })
     }
-  }, [user])
+  }, [navigate, redirectPath, user])
 
-  console.log('ProtectedRoute user', user)
   return children ? children : <Outlet />
 }
 

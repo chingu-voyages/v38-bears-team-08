@@ -42,7 +42,6 @@ const ResetPassword: FC<closeModalType> = ({ closeModal }) => {
       }, 3000)
     } catch (error: serverErrorsType | any) {
       setServerError(error)
-      console.log(error)
     }
   }
 

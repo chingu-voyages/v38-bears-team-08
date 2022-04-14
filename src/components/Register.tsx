@@ -112,17 +112,12 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('state', state)
-    const errorObject = checkFormForErrors(state)
-    console.log('errorObject', errorObject)
 
-    console.log('errorObjectIsEmpty', errorObjectIsEmpty(errorObject))
+    const errorObject = checkFormForErrors(state)
 
     if (errorObjectIsEmpty(errorObject)) {
       try {
-        const newUser = await registerUser(state.username, state.email, state.password)
-        console.log('newUser created succesfully', newUser)
-
+        await registerUser(state.username, state.email, state.password)
         navigate('/login', {
           replace: true,
           state: { message: 'You have succesfully registered.' }
@@ -131,7 +126,6 @@ const Register = () => {
         setServerErrors(error)
       }
     } else {
-      console.log('setFormErrors')
       setFormErrors(prevErrors => ({ ...prevErrors, ...errorObject }))
       const errObj = removeErrorsFromErrorObject(errorObject)
       setState(prevState => ({
@@ -148,8 +142,7 @@ const Register = () => {
   const handleModalClose = () => {
     setIsModalOpen(false)
   }
-  console.log('serverErrors', serverErrors)
-  console.log('typeof serverErrors', typeof serverErrors)
+
   return (
     <div id='register-component'>
       {serverErrors ? (

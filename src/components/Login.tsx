@@ -51,11 +51,9 @@ const Login = () => {
     event.preventDefault()
 
     try {
-      const user = await login(loginDetails.email, loginDetails.password)
-      console.log(user)
+      await login(loginDetails.email, loginDetails.password)
     } catch (error: serverErrorsType | any) {
       setServerError(error)
-      console.log(error)
     }
   }
 
