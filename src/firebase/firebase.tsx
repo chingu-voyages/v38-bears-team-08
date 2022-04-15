@@ -16,6 +16,7 @@ import {
   getDoc,
   CollectionReference,
   addDoc,
+  deleteDoc,
   setDoc
 } from 'firebase/firestore'
 
@@ -38,28 +39,18 @@ const docs = getDocs(collectionRef).then(
     console.log('error', error)
   }
 ) //   END then
-
+interface saveRecipeType {
+  id: string
+  title: string
+  img: string
+}
 // console.log('collectionRef', collectionRef)
-const addDocument = async (userId: string) => {
+const addDocument = async (userId: string, recipeObject: saveRecipeType | {}) => {
   try {
     const docRef = await setDoc(
       doc(firestore, 'recipes', userId),
       {
-        title: 'Fish & Chips',
-        img: 'https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2017/05/frying-pan-pizza-crust-recipe-image.jpg?itok=ZzQ8s5ka',
-        ingredients: [
-          '1 tbsp olive oil',
-          '1 onion, chopped',
-          '2 garlic cloves, crushed',
-          '2 tbsp chopped fresh parsley',
-          '1 tbsp chopped fresh thyme',
-          '2 tbsp chopped fresh rosemary',
-          '1 tbsp chopped fresh oregano',
-          '1 tbsp chopped fresh basil',
-          '1 tbsp chopped fresh sage',
-          '1 tbsp chopped fresh fennel',
-          '1 tbsp chopped fresh dill'
-        ]
+        ...recipeObject
       },
       { merge: true }
     )
@@ -79,12 +70,29 @@ type errorObject = {
   code: number
 }
 collection(firestore, 'user_recipes')
-const saveRecipe = async (recipe: any, user_id: CollectionReference) => {
-  collection(firestore, 'user_recipes')
-  // doc(user_id).set({ recipe }, { merge: true })
-}
 
-const deleteRecipe = async (recipeId: string) => {}
+const deleteRecipe = async (recipeId: string) => {
+  try {
+    const docRef = doc(firestore, 'recipes', recipeId)
+    const docSnap = await getDoc(docRef)
+    console.log('docSnap', docSnap)
+    if (docSnap.exists()) {
+      await deleteDoc(doc(firestore, 'recipes', recipeId))
+      return {
+        message: 'Recipe deleted',
+        code: 200
+      }
+    } else {
+      return {
+        message: 'Recipe not found',
+        code: 404
+      }
+    }
+  } catch (error: errorObject | any) {
+    console.log(error)
+    throw new Error(error.message)
+  }
+}
 
 const registerUser = async (username: string, email: string, password: string) => {
   try {
@@ -92,7 +100,7 @@ const registerUser = async (username: string, email: string, password: string) =
     await updateProfile(newUser.user, {
       displayName: username
     })
-    await addDocument(newUser.user.uid)
+    await addDocument(newUser.user.uid, {})
 
     console.log('registerUser newUser', newUser)
     return {
