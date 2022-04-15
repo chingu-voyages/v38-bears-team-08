@@ -1,7 +1,9 @@
-import React, { useState, FC } from 'react'
+import React, { useState, FC, useEffect } from 'react'
 import { login } from '../firebase/firebase'
 import Modal from './Modal'
 import ResetPassword from './ResetPassword'
+import { useLocation } from 'react-router-dom'
+
 interface loginDetailsType {
   email: string
   password: string
@@ -37,6 +39,23 @@ const Login = () => {
 
   const [serverError, setServerError] = useState<serverErrorsType>()
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [saveError, setSaveError] = useState<string>('')
+
+  const location = useLocation()
+
+  useEffect(() => {
+    const checkSaveError = () => {
+      if (location.state) {
+        const { message } = location.state as serverErrorsType
+        setSaveError(message)
+        window.history.replaceState({}, '')
+      } else {
+        setSaveError('')
+      }
+    }
+    checkSaveError()
+  }, [location])
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -70,7 +89,7 @@ const Login = () => {
       {serverError ? (
         <DisplayErrors message={serverError.message} />
       ) : (
-        <p className='error-msg'></p>
+        <p className='error-msg'>{saveError !== '' ? saveError : ''}</p>
       )}
       <form id='login-form' action='' onSubmit={handleSubmit}>
         <div className='input-container'>

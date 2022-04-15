@@ -73,6 +73,7 @@ const addDocument = async (userId: string) => {
 //   console.log('Document data:', docSnap.data())
 // })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type errorObject = {
   message: string
   code: number
