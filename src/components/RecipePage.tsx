@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 import { addDocument as addRecipe } from '../firebase/firebase'
@@ -36,10 +37,6 @@ const getRecipeInfo = async (id: string) => {
     console.log(id)
     const url = `/.netlify/functions/get-recipe/${id}`
     const response = await axios.get(url)
-    // const response = await axios.get(
-    //   `https://api.spoonacular.com/recipes/${id}/information?apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
-    // )
-    // console.log(response)
     return response.data
   } catch (error) {
     console.log(error)
@@ -48,7 +45,8 @@ const getRecipeInfo = async (id: string) => {
 
 const RecipePage = () => {
   /* Gets id for the specific recipe from the url */
-  const { id } = useParams<string>()
+  // const { id } = useParams<string>()
+
   const [recipeData, setRecipeData] = useState<recipeDataType>({
     title: '',
     summary: '',
@@ -75,48 +73,50 @@ const RecipePage = () => {
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
-      const {
-        title,
-        summary,
-        servings,
-        dishTypes,
-        sourceName,
-        sourceUrl,
-        healthScore,
-        readyInMinutes,
-        image,
-        extendedIngredients,
-        analyzedInstructions
-      } = await getRecipeInfo(id)
-      setRecipeData({
-        title,
-        summary,
-        servings,
-        dishType: dishTypes[0],
-        sourceName,
-        sourceUrl,
-        healthScore,
-        readyInMinutes,
-        image,
-        ingredients: extendedIngredients.map(
-          (ingredient: ingredientType) => ingredient.original
-        ),
-        steps: analyzedInstructions[0].steps.map((instruction: stepType) => ({
-          number: instruction.number,
-          step: instruction.step
-        }))
-      })
+      if (user) {
+        const {
+          title,
+          summary,
+          servings,
+          dishTypes,
+          sourceName,
+          sourceUrl,
+          healthScore,
+          readyInMinutes,
+          image,
+          extendedIngredients,
+          analyzedInstructions
+        } = await getRecipeInfo(user.uid)
+        setRecipeData({
+          title,
+          summary,
+          servings,
+          dishType: dishTypes[0],
+          sourceName,
+          sourceUrl,
+          healthScore,
+          readyInMinutes,
+          image,
+          ingredients: extendedIngredients.map(
+            (ingredient: ingredientType) => ingredient.original
+          ),
+          steps: analyzedInstructions[0].steps.map((instruction: stepType) => ({
+            number: instruction.number,
+            step: instruction.step
+          }))
+        })
+      }
     }
 
     loadRecipeInfo()
-  }, [id])
+  }, [])
 
   const navigate = useNavigate()
 
   const saveRecipe = async () => {
     if (user) {
       await addRecipe(user.uid, {
-        id,
+        id: user.uid,
         title: recipeData.title,
         img: recipeData.image
       })
