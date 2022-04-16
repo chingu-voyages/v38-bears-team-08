@@ -7,6 +7,7 @@ import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 import { addDocument as addRecipe } from '../firebase/firebase'
 
+
 interface stepType {
   number: number
   step: string
@@ -17,14 +18,10 @@ interface recipeDataType {
   summary: string
   servings: number
   dishType: string
-  dairyFree: boolean
   sourceName: string
   sourceUrl: string
   healthScore: number
   readyInMinutes: number
-  vegan: boolean
-  vegetarian: boolean
-  glutenFree: boolean
   image: string
   ingredients: [string]
   steps: [stepType]
@@ -36,11 +33,9 @@ interface ingredientType {
 
 const getRecipeInfo = async (id: string | undefined) => {
   try {
-    console.log(id)
     const response = await axios.get(
       `https://api.spoonacular.com/recipes/${id}/information?apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
     )
-    console.log(response)
     return response.data
   } catch (error) {
     console.log(error)
@@ -55,14 +50,10 @@ const RecipePage = () => {
     summary: '',
     servings: 0,
     dishType: '',
-    dairyFree: false,
     sourceName: '',
     sourceUrl: '',
     healthScore: 0,
     readyInMinutes: 0,
-    vegan: false,
-    vegetarian: false,
-    glutenFree: false,
     image: '',
     ingredients: [''],
     steps: [{ number: 0, step: '' }]
@@ -70,6 +61,13 @@ const RecipePage = () => {
 
   const user = useFirebaseAuth() || auth.currentUser
   const [recipeSaved, setRecipeSaved] = useState<boolean>(false)
+  // const userRecipes = async () => {
+  //   if (user) {
+  //     await getUserRecipes(user.uid)
+  //     // console.log(rec)
+  //   }
+  // }
+  // userRecipes()
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
@@ -78,14 +76,10 @@ const RecipePage = () => {
         summary,
         servings,
         dishTypes,
-        dairyFree,
         sourceName,
         sourceUrl,
         healthScore,
         readyInMinutes,
-        vegan,
-        vegetarian,
-        glutenFree,
         image,
         extendedIngredients,
         analyzedInstructions
@@ -95,14 +89,10 @@ const RecipePage = () => {
         summary,
         servings,
         dishType: dishTypes[0],
-        dairyFree,
         sourceName,
         sourceUrl,
         healthScore,
         readyInMinutes,
-        vegan,
-        vegetarian,
-        glutenFree,
         image,
         ingredients: extendedIngredients.map(
           (ingredient: ingredientType) => ingredient.original
