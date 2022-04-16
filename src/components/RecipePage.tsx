@@ -33,9 +33,9 @@ interface ingredientType {
 
 const getRecipeInfo = async (recipeId: string) => {
   try {
-    console.log(recipeId)
     const url = `/.netlify/functions/get-recipe/${recipeId}`
     const response = await axios.get(url)
+    console.log(response.data)
     return response.data
   } catch (error) {
     console.log(error)
@@ -80,39 +80,38 @@ const RecipePage = () => {
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
-      if (user) {
-        const {
-          title,
-          summary,
-          servings,
-          dishTypes,
-          sourceName,
-          sourceUrl,
-          healthScore,
-          readyInMinutes,
-          image,
-          extendedIngredients,
-          analyzedInstructions
-        } = await getRecipeInfo(recipeId as string)
-        setRecipeData({
-          title,
-          summary,
-          servings,
-          dishType: dishTypes[0],
-          sourceName,
-          sourceUrl,
-          healthScore,
-          readyInMinutes,
-          image,
-          ingredients: extendedIngredients.map(
-            (ingredient: ingredientType) => ingredient?.original
-          ),
-          steps: analyzedInstructions[0]?.steps.map((instruction: stepType) => ({
-            number: instruction.number,
-            step: instruction.step
-          }))
-        })
-      }
+      // console.log(await getRecipeInfo(recipeId as string))
+      const {
+        title,
+        summary,
+        servings,
+        dishTypes,
+        sourceName,
+        sourceUrl,
+        healthScore,
+        readyInMinutes,
+        image,
+        extendedIngredients,
+        analyzedInstructions
+      } = await getRecipeInfo(recipeId as string)
+      setRecipeData({
+        title,
+        summary,
+        servings,
+        dishType: dishTypes[0],
+        sourceName,
+        sourceUrl,
+        healthScore,
+        readyInMinutes,
+        image,
+        ingredients: extendedIngredients.map(
+          (ingredient: ingredientType) => ingredient?.original
+        ),
+        steps: analyzedInstructions[0]?.steps.map((instruction: stepType) => ({
+          number: instruction.number,
+          step: instruction.step
+        }))
+      })  
     }
 
     loadRecipeInfo()
