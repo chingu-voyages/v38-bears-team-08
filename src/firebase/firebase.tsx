@@ -150,6 +150,7 @@ const logout = async () => {
   try {
     const logOutUser = await signOut(auth)
     console.log('logOutUser', logOutUser)
+    window.sessionStorage.clear()
     return {
       message: 'You have successfully logged out',
       code: 200

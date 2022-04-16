@@ -3,7 +3,8 @@ import { login } from '../firebase/firebase'
 import Modal from './Modal'
 import ResetPassword from './ResetPassword'
 import { useLocation } from 'react-router-dom'
-
+import { getAllUserRecipes } from '../firebase/firebase'
+import { User } from 'firebase/auth'
 interface loginDetailsType {
   email: string
   password: string
@@ -12,6 +13,12 @@ interface loginDetailsType {
 
 interface serverErrorsType {
   message: string
+}
+
+interface saveRecipeType {
+  id: string
+  title: string
+  img: string
 }
 
 const makeMessageHumanReadable = (message: string) => {
@@ -29,6 +36,22 @@ const DisplayErrors: FC<serverErrorsType> = ({ message }) => {
       <p className='error-msg'>{error}</p>
     </>
   )
+}
+
+const retriveUserRecipesFromDB = async (user: User) => {
+  /* TODO: Get specific user recipes from DB */
+  if (user) {
+    const recipes = await getAllUserRecipes(user.uid)
+    const arrayOfObj = Object.entries(recipes as saveRecipeType).map(e => ({
+      [e[0]]: e[1]
+    }))
+    const arrformobj = Object.values(arrayOfObj)
+      .map(e => Object.values(e))
+      .flat()
+    console.log('arrayOfObj', arrayOfObj)
+    console.log('arrformobj', arrformobj)
+    return arrformobj
+  }
 }
 
 const Login = () => {
@@ -56,10 +79,8 @@ const Login = () => {
     checkSaveError()
   }, [location])
 
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-
     setLoginDetails({
       ...loginDetails,
       [name]: value
@@ -70,7 +91,11 @@ const Login = () => {
     event.preventDefault()
 
     try {
-      await login(loginDetails.email, loginDetails.password)
+      const currentUser = await login(loginDetails.email, loginDetails.password)
+      const userRecipes = await retriveUserRecipesFromDB(currentUser)
+      if (userRecipes) {
+        window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes))
+      }
     } catch (error: serverErrorsType | any) {
       setServerError(error)
     }

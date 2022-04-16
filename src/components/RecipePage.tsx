@@ -193,8 +193,8 @@ const RecipePage = () => {
             <div id='recipe-info-dishType-wrapper' className='recipe-data'>
               <MdOutlineToday id='recipe-info-dishType-icon' />
               <span id='recipe-info-dishType' className='recipe-data-text'>
-                {recipeData.dishType.slice(0, 1).toUpperCase()}
-                {recipeData.dishType.slice(1)}
+                {recipeData?.dishType?.slice(0, 1).toUpperCase()}
+                {recipeData?.dishType?.slice(1)}
               </span>
             </div>
           </div>
