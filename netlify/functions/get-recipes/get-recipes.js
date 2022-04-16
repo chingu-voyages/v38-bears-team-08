@@ -13,7 +13,8 @@ const handler = async function (event) {
   // this is secret too, your frontend won't see this
   const { API_URL, API_TOKEN } = process.env
 
-  const URL = API_URL + `?${queryStringParameters}&number=100&apiKey=${API_TOKEN}`
+  const URL =
+    API_URL + `/findByIngredients?${queryStringParameters}&number=100&apiKey=${API_TOKEN}`
 
   console.log('Constructed URL is ...', URL)
 
