@@ -33,7 +33,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path='/:id' element={<RecipePage />} />
+            <Route path='/:recipeId' element={<RecipePage />} />
             <Route element={<AuthenticatedRoute />}>
               <Route path='/saved-recipes' element={<SavedRecipes />} />
             </Route>

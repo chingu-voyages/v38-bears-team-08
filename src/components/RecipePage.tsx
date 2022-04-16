@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 import { addDocument as addRecipe, getAllUserRecipes } from '../firebase/firebase'
@@ -31,10 +31,10 @@ interface ingredientType {
   original: string
 }
 
-const getRecipeInfo = async (id: string) => {
+const getRecipeInfo = async (recipeId: string) => {
   try {
-    console.log(id)
-    const url = `/.netlify/functions/get-recipe/${id}`
+    console.log(recipeId)
+    const url = `/.netlify/functions/get-recipe/${recipeId}`
     const response = await axios.get(url)
     return response.data
   } catch (error) {
@@ -44,7 +44,7 @@ const getRecipeInfo = async (id: string) => {
 
 const RecipePage = () => {
   /* Gets id for the specific recipe from the url */
-  // const { id } = useParams<string>()
+  const { recipeId } = useParams<string>()
 
   const [recipeData, setRecipeData] = useState<recipeDataType>({
     title: '',
@@ -72,11 +72,11 @@ const RecipePage = () => {
           window.sessionStorage.setItem(recipeId, JSON.stringify(recipes[recipeId]))
         }
       })
-      if (window.sessionStorage.getItem(id)) {
+      if (window.sessionStorage.getItem(recipeId as string)) {
         setDisableSaveButton(true)
       }
     }
-  }, [user, id])
+  }, [user, recipeId])
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
@@ -93,21 +93,21 @@ const RecipePage = () => {
           image,
           extendedIngredients,
           analyzedInstructions
-        } = await getRecipeInfo(user.uid)
+        } = await getRecipeInfo(recipeId as string)
         setRecipeData({
           title,
           summary,
           servings,
-          dishType: dishTypes[0],
+          dishType: dishTypes?.[0],
           sourceName,
           sourceUrl,
           healthScore,
           readyInMinutes,
           image,
           ingredients: extendedIngredients.map(
-            (ingredient: ingredientType) => ingredient.original
+            (ingredient: ingredientType) => ingredient?.original
           ),
-          steps: analyzedInstructions[0].steps.map((instruction: stepType) => ({
+          steps: analyzedInstructions?.[0].steps.map((instruction: stepType) => ({
             number: instruction.number,
             step: instruction.step
           }))
@@ -130,8 +130,8 @@ const RecipePage = () => {
       setRecipeSaved(true)
       setDisableSaveButton(true)
       window.sessionStorage.set(
-        id,
-        JSON.stringify({ id: id, title: recipeData.title, img: recipeData.image })
+        recipeId,
+        JSON.stringify({ recipeId, title: recipeData.title, img: recipeData.image })
       )
       setTimeout(() => {
         setRecipeSaved(false)
