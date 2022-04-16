@@ -51,11 +51,22 @@ const Header = () => {
               </li>
             </>
           ) : (
-            <li>
-              <a href='' onClick={handleLogout}>
-                Logout
-              </a>
-            </li>
+            <>
+              <li>
+                <NavLink
+                  to='/saved-recipes'
+                  style={({ isActive }) => ({
+                  color: isActive ? '#08ce01' : '#4b91f7'
+                })}>
+                  Saved Recipes                
+                </NavLink>
+              </li>
+              <li>
+                <a href='' onClick={handleLogout}>
+                  Logout
+                </a>
+              </li>
+            </>
           )}
         </ul>
       </nav>
