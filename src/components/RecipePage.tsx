@@ -217,14 +217,15 @@ const RecipePage = () => {
           <div id='recipe-steps-wrapper'>
             <h3 id='recipe-steps-subheading'>Instructions</h3>
             <ol id='recipe-steps'>
-              {recipeData?.steps.map((instruction: stepType) => (
-                <li
-                  id='recipe-step'
-                  className='recipe-list-item'
-                  key={instruction?.number}>
-                  {instruction?.step}
-                </li>
-              ))}
+              {recipeData?.steps &&
+                recipeData.steps.map((instruction: stepType) => (
+                  <li
+                    id='recipe-step'
+                    className='recipe-list-item'
+                    key={instruction?.number}>
+                    {instruction?.step}
+                  </li>
+                ))}
             </ol>
           </div>
         </div>
