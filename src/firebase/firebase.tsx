@@ -17,7 +17,9 @@ import {
   CollectionReference,
   addDoc,
   deleteDoc,
-  setDoc
+  setDoc,
+  query,
+  where
 } from 'firebase/firestore'
 
 // Initialize Firestore service
@@ -155,4 +157,4 @@ const resetPassword = async (email: string) => {
   }
 }
 
-export { registerUser, login, logout, resetPassword, addDocument }
+export { registerUser, login, logout, resetPassword, addDocument, deleteRecipe }
