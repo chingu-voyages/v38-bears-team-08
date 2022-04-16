@@ -5,7 +5,7 @@ import { auth } from '../firebase/firebaseConfig'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
-import { addDocument as addRecipe } from '../firebase/firebase'
+import { addDocument as addRecipe, getAllUserRecipes } from '../firebase/firebase'
 
 interface stepType {
   number: number
@@ -39,10 +39,6 @@ const getRecipeInfo = async (id: string) => {
     console.log(id)
     const url = `/.netlify/functions/get-recipe/${id}`
     const response = await axios.get(url)
-    // const response = await axios.get(
-    //   `https://api.spoonacular.com/recipes/${id}/information?apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
-    // )
-    // console.log(response)
     return response.data
   } catch (error) {
     console.log(error)
@@ -72,6 +68,21 @@ const RecipePage = () => {
 
   const user = useFirebaseAuth() || auth.currentUser
   const [recipeSaved, setRecipeSaved] = useState<boolean>(false)
+  const [disableSaveButton, setDisableSaveButton] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (user) {
+      getAllUserRecipes(user.uid).then(recipes => {
+        console.log('allRecipes', recipes)
+        for (const recipeId in recipes) {
+          window.sessionStorage.setItem(recipeId, JSON.stringify(recipes[recipeId]))
+        }
+      })
+      if (window.sessionStorage.getItem(id)) {
+        setDisableSaveButton(true)
+      }
+    }
+  }, [user, id])
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
@@ -129,6 +140,11 @@ const RecipePage = () => {
         img: recipeData.image
       })
       setRecipeSaved(true)
+      setDisableSaveButton(true)
+      window.sessionStorage.set(
+        id,
+        JSON.stringify({ id: id, title: recipeData.title, img: recipeData.image })
+      )
       setTimeout(() => {
         setRecipeSaved(false)
       }, 5000)
@@ -150,13 +166,26 @@ const RecipePage = () => {
     }
   }
 
+  const SaveErroMessage = () => {
+    if (disableSaveButton) {
+      return (
+        <span id='save-error-message'>
+          {recipeData.title} recipe has already been saved
+        </span>
+      )
+    } else {
+      return null
+    }
+  }
+
   return (
     <div id='recipe-page'>
       <SaveSuccessMessage />
+      <SaveErroMessage />
       <div id='recipe-info'>
         <div id='recipe-main'>
           <h2 id='recipe-info-title'>{recipeData.title}</h2>
-          <button id='recipe-save-btn' onClick={saveRecipe}>
+          <button disabled={disableSaveButton} id='recipe-save-btn' onClick={saveRecipe}>
             Save Recipe
           </button>
           <img src={recipeData.image} alt={recipeData.title} id='recipe-info-image' />

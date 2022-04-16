@@ -77,6 +77,7 @@ collection(firestore, 'user_recipes')
 // TODO: create and test function
 const getAllUserRecipes = async (userId: string) => {
   try {
+    console.log('userId', userId)
     const userRecipes = await getDoc(doc(firestore, 'recipes', userId))
     console.log('userRecipes', userRecipes.data())
     return userRecipes.data()
