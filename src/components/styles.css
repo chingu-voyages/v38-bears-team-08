@@ -617,3 +617,42 @@ ul li a:hover {
 }
 
 /* END OF Recipe Page component */
+
+/* Saved Recipes Component */
+
+#saved-recipes {
+  margin: auto;
+  width: 90%;
+  -ms-grid: grid;
+  display: grid;
+  -ms-grid-columns: repeat(auto-fit, minmax(312px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(312px, 1fr));
+}
+
+#save-recipes-heading {
+  text-align: center;
+}
+
+#saved-recipe-link {
+  text-decoration: none;
+  width: 309px;
+  margin: auto;
+}
+
+#saved-recipe {
+  height: 263px;
+  width: 309px;
+  border-radius: 65px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+#saved-recipe-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 11em;
+}
+
+/* END of Saved Recipes Component */
