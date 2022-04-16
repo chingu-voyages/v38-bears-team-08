@@ -17,7 +17,9 @@ import {
   CollectionReference,
   addDoc,
   deleteDoc,
-  setDoc
+  setDoc,
+  query,
+  where
 } from 'firebase/firestore'
 
 // Initialize Firestore service

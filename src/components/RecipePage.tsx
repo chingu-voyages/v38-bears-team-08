@@ -17,14 +17,10 @@ interface recipeDataType {
   summary: string
   servings: number
   dishType: string
-  dairyFree: boolean
   sourceName: string
   sourceUrl: string
   healthScore: number
   readyInMinutes: number
-  vegan: boolean
-  vegetarian: boolean
-  glutenFree: boolean
   image: string
   ingredients: [string]
   steps: [stepType]
@@ -47,20 +43,16 @@ const getRecipeInfo = async (id: string) => {
 
 const RecipePage = () => {
   /* Gets id for the specific recipe from the url */
-  const { id } = useParams()
+  const { id } = useParams<string>()
   const [recipeData, setRecipeData] = useState<recipeDataType>({
     title: '',
     summary: '',
     servings: 0,
     dishType: '',
-    dairyFree: false,
     sourceName: '',
     sourceUrl: '',
     healthScore: 0,
     readyInMinutes: 0,
-    vegan: false,
-    vegetarian: false,
-    glutenFree: false,
     image: '',
     ingredients: [''],
     steps: [{ number: 0, step: '' }]
@@ -91,14 +83,10 @@ const RecipePage = () => {
         summary,
         servings,
         dishTypes,
-        dairyFree,
         sourceName,
         sourceUrl,
         healthScore,
         readyInMinutes,
-        vegan,
-        vegetarian,
-        glutenFree,
         image,
         extendedIngredients,
         analyzedInstructions
@@ -108,14 +96,10 @@ const RecipePage = () => {
         summary,
         servings,
         dishType: dishTypes[0],
-        dairyFree,
         sourceName,
         sourceUrl,
         healthScore,
         readyInMinutes,
-        vegan,
-        vegetarian,
-        glutenFree,
         image,
         ingredients: extendedIngredients.map(
           (ingredient: ingredientType) => ingredient.original
