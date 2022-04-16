@@ -123,7 +123,7 @@ const RecipePage = () => {
   const saveRecipe = async () => {
     if (user) {
       await addRecipe(user.uid, {
-        id: user.uid,
+        id: recipeId as string,
         title: recipeData.title,
         img: recipeData.image
       })
