@@ -45,12 +45,14 @@ interface saveRecipeType {
   img: string
 }
 // console.log('collectionRef', collectionRef)
-const addDocument = async (userId: string, recipeObject: saveRecipeType | {}) => {
+const addDocument = async (userId: string, recipe: saveRecipeType) => {
   try {
+    // const recipeToSave =
+    //   Object.keys(recipe).length > 0 ? { [recipe.id]: { ...recipe } } : {}
     const docRef = await setDoc(
       doc(firestore, 'recipes', userId),
       {
-        ...recipeObject
+        [recipe.id]: { ...recipe }
       },
       { merge: true }
     )
@@ -70,7 +72,20 @@ type errorObject = {
   code: number
 }
 collection(firestore, 'user_recipes')
-
+// TODO: create netlify function get-recipe
+// TODO: Add firestore rules
+// TODO: create and test function
+const getAllUserRecipes = async (userId: string) => {
+  try {
+    const userRecipes = await getDoc(doc(firestore, 'recipes', userId))
+    console.log('userRecipes', userRecipes.data())
+    return userRecipes.data()
+  } catch (error: errorObject | any) {
+    console.log(error)
+    throw new Error(error.message)
+  }
+}
+// TODO: Test function
 const deleteRecipe = async (recipeId: string) => {
   try {
     const docRef = doc(firestore, 'recipes', recipeId)
@@ -100,7 +115,7 @@ const registerUser = async (username: string, email: string, password: string) =
     await updateProfile(newUser.user, {
       displayName: username
     })
-    await addDocument(newUser.user.uid, {})
+    // await addDocument(newUser.user.uid, {})
 
     console.log('registerUser newUser', newUser)
     return {
@@ -155,4 +170,12 @@ const resetPassword = async (email: string) => {
   }
 }
 
-export { registerUser, login, logout, resetPassword, addDocument }
+export {
+  registerUser,
+  login,
+  logout,
+  resetPassword,
+  addDocument,
+  deleteRecipe,
+  getAllUserRecipes
+}

@@ -34,13 +34,15 @@ interface ingredientType {
   original: string
 }
 
-const getRecipeInfo = async (id: string | undefined) => {
+const getRecipeInfo = async (id: string) => {
   try {
     console.log(id)
-    const response = await axios.get(
-      `https://api.spoonacular.com/recipes/${id}/information?apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
-    )
-    console.log(response)
+    const url = `/.netlify/functions/get-recipe/${id}`
+    const response = await axios.get(url)
+    // const response = await axios.get(
+    //   `https://api.spoonacular.com/recipes/${id}/information?apiKey=f2998c2dba0c42f1b03c4774b90d04f5`
+    // )
+    // console.log(response)
     return response.data
   } catch (error) {
     console.log(error)
