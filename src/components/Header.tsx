@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { useFirebaseAuth } from '../FirebaseAuthContext'
 import { auth } from '../firebase/firebaseConfig'
 import { logout } from '../firebase/firebase'
@@ -16,7 +16,9 @@ const Header = () => {
 
   return (
     <header>
-      <img src={Logo} alt='Logo' title='Logo' />
+      <Link to={'/'}>
+        <img src={Logo} alt='Logo' title='Logo' />
+      </Link>
       <h1>Recipe App</h1>
       <nav>
         <ul>
@@ -56,9 +58,9 @@ const Header = () => {
                 <NavLink
                   to='/saved-recipes'
                   style={({ isActive }) => ({
-                  color: isActive ? '#08ce01' : '#4b91f7'
-                })}>
-                  Saved Recipes                
+                    color: isActive ? '#08ce01' : '#4b91f7'
+                  })}>
+                  Saved Recipes
                 </NavLink>
               </li>
               <li>
