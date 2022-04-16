@@ -98,7 +98,7 @@ const RecipePage = () => {
           title,
           summary,
           servings,
-          dishType: dishTypes?.[0],
+          dishType: dishTypes[0],
           sourceName,
           sourceUrl,
           healthScore,
@@ -107,7 +107,7 @@ const RecipePage = () => {
           ingredients: extendedIngredients.map(
             (ingredient: ingredientType) => ingredient?.original
           ),
-          steps: analyzedInstructions?.[0].steps.map((instruction: stepType) => ({
+          steps: analyzedInstructions[0]?.steps.map((instruction: stepType) => ({
             number: instruction.number,
             step: instruction.step
           }))
@@ -193,8 +193,8 @@ const RecipePage = () => {
             <div id='recipe-info-dishType-wrapper' className='recipe-data'>
               <MdOutlineToday id='recipe-info-dishType-icon' />
               <span id='recipe-info-dishType' className='recipe-data-text'>
-                {recipeData.dishType.slice(0, 1).toUpperCase()}
-                {recipeData.dishType.slice(1)}
+                {recipeData?.dishType.slice(0, 1).toUpperCase()}
+                {recipeData?.dishType.slice(1)}
               </span>
             </div>
           </div>
@@ -218,12 +218,12 @@ const RecipePage = () => {
           <div id='recipe-steps-wrapper'>
             <h3 id='recipe-steps-subheading'>Instructions</h3>
             <ol id='recipe-steps'>
-              {recipeData.steps.map((instruction: stepType) => (
+              {recipeData?.steps.map((instruction: stepType) => (
                 <li
                   id='recipe-step'
                   className='recipe-list-item'
-                  key={instruction.number}>
-                  {instruction.step}
+                  key={instruction?.number}>
+                  {instruction?.step}
                 </li>
               ))}
             </ol>
