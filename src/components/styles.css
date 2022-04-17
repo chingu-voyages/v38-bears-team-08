@@ -502,6 +502,10 @@ ul li a:hover {
   padding-top: 37px;
 }
 
+#recipe-info-title {
+  text-align: center;
+}
+
 #recipe-info-image {
   width: 100%;
   max-width: 556px;
@@ -569,6 +573,14 @@ ul li a:hover {
   outline: 0;
 }
 
+#recipe-save-btn:disabled {
+  background: linear-gradient(180deg, #54585e 0%, #636569 100%);
+}
+
+#recipe-save-btn:disabled:hover {
+  box-shadow: none;
+}
+
 .recipe-data {
   display: flex;
   align-items: center;
@@ -627,6 +639,7 @@ ul li a:hover {
   display: grid;
   -ms-grid-columns: repeat(auto-fit, minmax(312px, 1fr));
   grid-template-columns: repeat(auto-fit, minmax(312px, 1fr));
+  grid-row-gap: 35px;
 }
 
 #save-recipes-heading {
@@ -639,10 +652,35 @@ ul li a:hover {
   margin: auto;
 }
 
+#saved-recipe-wrapper {
+  height: 263px;
+  width: 309px;
+  margin: auto;
+  display: flex;
+  position: relative;
+  justify-content: center;
+}
+
+#delete-recipe-btn {
+  position: absolute;
+  color: white;
+  left: 0px;
+  background-color: black;
+  padding: 14px;
+  border-radius: 19px 0 0 0;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+  z-index: 2;
+}
+
+#delete-recipe-btn:hover {
+  color: crimson;
+}
+
 #saved-recipe {
   height: 263px;
   width: 309px;
-  border-radius: 65px;
+  border-radius: 19px 65px 65px 65px;
   margin: auto;
   display: flex;
   justify-content: center;
@@ -652,7 +690,13 @@ ul li a:hover {
   color: #fff;
   font-size: 22px;
   font-weight: 600;
-  line-height: 11em;
+  text-align: center;
+  margin: auto;
+  width: 90%;
+}
+
+#saved-recipe:hover #saved-recipe-title {
+  text-decoration: underline;
 }
 
 /* END of Saved Recipes Component */
