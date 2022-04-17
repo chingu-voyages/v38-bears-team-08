@@ -12,26 +12,61 @@ interface saveRecipeType {
   img: string
 }
 
+interface responseType {
+  message: string
+  code: number
+}
+
+
 const SavedRecipes = () => {
   const user = useFirebaseAuth() || auth.currentUser
   const [userRecipes, setUserRecipes] = useState<saveRecipeType[] | []>()
-
-  const deleteSavedRecipe = async (recipeId: string, user: User) => {
-    const result = await deleteRecipe(recipeId, user)
-    // TODO: Catch possible server error
-    // TODO: Display error message, either from server of recipe not found
-    // TODO: Display success message and remove/update recipe on page
-    console.log(result)
-    return result
-  }
+  const [deleteResponse, setDeleteResponse] = useState<responseType>()
+  const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false)
 
   useEffect(() => {
     getUserRecipes(user as User).then(userRecipes => setUserRecipes(userRecipes))
-  }, [user])
+  }, [user, userRecipes?.length])
+
+  const messageTimer = () => {
+    setShowDeleteMessage(true)
+    setTimeout(() => {
+      setShowDeleteMessage(false)
+    }, 5000)
+  }
+
+  const deleteSavedRecipe = async (recipeId: string, user: User) => {
+    try {
+      const response: responseType = await deleteRecipe(recipeId, user)
+      setUserRecipes(userRecipes?.filter((recipe: saveRecipeType) => recipe.id === recipeId))
+      console.log(response)
+      setDeleteResponse({
+        message: response.message,
+        code: response.code,
+      })
+      messageTimer()
+    } catch(e: any) {
+      console.log(e)
+      setDeleteResponse({
+        message: e.message,
+        code: e.code,
+      })
+      messageTimer()
+    }
+  }
+
+  const DeleteMessage = () => {
+    return (
+      <div id="delete-message-wrapper">
+        <span id="delete-message">{deleteResponse?.message}</span>
+      </div>
+    )
+  }
 
   return (
     <>
       <h2 id='save-recipes-heading'>{user ? user.displayName : ''}'s Recipes</h2>
+      {showDeleteMessage ? <DeleteMessage /> : null}
       <div id='saved-recipes'>
         {userRecipes &&
           userRecipes.map((userRecipe: saveRecipeType) => (
