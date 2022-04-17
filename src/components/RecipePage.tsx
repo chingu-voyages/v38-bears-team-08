@@ -153,27 +153,14 @@ const RecipePage = () => {
     }
   }
 
-  const SaveErroMessage = () => {
-    if (disableSaveButton) {
-      return (
-        <span id='save-error-message'>
-          {recipeData.title} recipe has already been saved
-        </span>
-      )
-    } else {
-      return null
-    }
-  }
-
   return (
     <div id='recipe-page'>
       <SaveSuccessMessage />
-      <SaveErroMessage />
       <div id='recipe-info'>
         <div id='recipe-main'>
           <h2 id='recipe-info-title'>{recipeData.title}</h2>
           <button disabled={disableSaveButton} id='recipe-save-btn' onClick={saveRecipe}>
-            Save Recipe
+            {disableSaveButton ? 'Recipe Saved' : 'Save Recipe'}
           </button>
           <img src={recipeData.image} alt={recipeData.title} id='recipe-info-image' />
           <div id='recipe-info-cooking'>
