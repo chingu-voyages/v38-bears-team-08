@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
+import { Triangle } from 'react-loader-spinner'
 
 console.log('apiKey', process.env.REACT_APP_API_KEY)
 
@@ -158,6 +159,7 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
 const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 16))
   const [page, setPage] = useState<number>(0)
+  const [loading, setLoading] = useState(false)
 
   console.log('RecipiesView', recipes)
   console.log('shownRecipes', shownRecipes)
@@ -193,6 +195,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
 
   return (
     <div id='recipes-grid'>
+      {/* <Triangle ariaLabel='loading-indicator' /> */}
       {shownRecipes.map((recipe: recipeType, index: number) => (
         <Link key={recipe.id} to={`${recipe.id}`} id='recipe-link'>
           <div ref={shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe'>

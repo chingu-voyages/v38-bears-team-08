@@ -5,7 +5,8 @@ import {
   signOut,
   sendPasswordResetEmail,
   setPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
+  User
 } from 'firebase/auth'
 import { auth } from './firebaseConfig'
 import {
@@ -27,6 +28,18 @@ const firestore = getFirestore()
 // Get all recipes (a reference to the collection)
 const collectionRef = collection(firestore, 'recipes')
 // Get collection documents
+interface saveRecipeType {
+  id: string
+  title: string
+  img: string
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface errorObject {
+  message: string
+  code: number
+}
+
 const docs = getDocs(collectionRef).then(
   snapshot => {
     console.log('snapshot', snapshot.docs)
@@ -41,13 +54,9 @@ const docs = getDocs(collectionRef).then(
     console.log('error', error)
   }
 ) //   END then
-interface saveRecipeType {
-  id: string
-  title: string
-  img: string
-}
 // console.log('collectionRef', collectionRef)
-const addDocument = async (userId: string, recipe: saveRecipeType) => {
+
+const addRecipe = async (userId: string, recipe: saveRecipeType) => {
   try {
     // const recipeToSave =
     //   Object.keys(recipe).length > 0 ? { [recipe.id]: { ...recipe } } : {}
@@ -67,26 +76,44 @@ const addDocument = async (userId: string, recipe: saveRecipeType) => {
 // const docSnap = getDoc(docRef).then(docSnap => {
 //   console.log('Document data:', docSnap.data())
 // })
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type errorObject = {
-  message: string
-  code: number
-}
-collection(firestore, 'user_recipes')
-// TODO: create netlify function get-recipe
 // TODO: Add firestore rules
 // TODO: create and test function
 const getAllUserRecipes = async (userId: string) => {
   try {
-    console.log('userId', userId)
     const userRecipes = await getDoc(doc(firestore, 'recipes', userId))
     console.log('userRecipes', userRecipes.data())
     return userRecipes.data()
   } catch (error: errorObject | any) {
     console.log(error)
-    throw new Error(error.message)
+    throw new Error(error)
   }
+}
+
+/**
+ * @param {User} user
+ * This function (given a valid user)
+ * will check if there are recipes in saved in session storage
+ * add will return them.
+ * If there are no recipes in session storage,
+ * will fetch them from firestore and add them to session storage
+ */
+// TODO: Test function with empty db
+async function getUserRecipes(user: User) {
+  if (user) {
+    if (window.sessionStorage.getItem('userRecipes')) {
+      const userRecipes = JSON.parse(
+        window.sessionStorage.getItem('userRecipes') as string
+      )
+      console.log('userRecipes from sessionStorage', userRecipes)
+      return userRecipes
+    } else {
+      const recipes = await getAllUserRecipes(user.uid)
+      const userRecipes = Object.entries(recipes as saveRecipeType).map(r => r[1])
+      console.log('userRecipes from db', userRecipes)
+      window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes))
+      return userRecipes
+    }
+  } else return void 0
 }
 // TODO: Test function
 const deleteRecipe = async (recipeId: string) => {
@@ -179,7 +206,7 @@ export {
   login,
   logout,
   resetPassword,
-  addDocument,
+  addRecipe,
   deleteRecipe,
-  getAllUserRecipes
+  getUserRecipes
 }

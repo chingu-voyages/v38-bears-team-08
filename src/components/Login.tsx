@@ -3,7 +3,7 @@ import { login } from '../firebase/firebase'
 import Modal from './Modal'
 import ResetPassword from './ResetPassword'
 import { useLocation } from 'react-router-dom'
-import { getAllUserRecipes } from '../firebase/firebase'
+import { getUserRecipes } from '../firebase/firebase'
 import { User } from 'firebase/auth'
 interface loginDetailsType {
   email: string
@@ -36,22 +36,6 @@ const DisplayErrors: FC<serverErrorsType> = ({ message }) => {
       <p className='error-msg'>{error}</p>
     </>
   )
-}
-
-const retriveUserRecipesFromDB = async (user: User) => {
-  /* TODO: Get specific user recipes from DB */
-  if (user) {
-    const recipes = await getAllUserRecipes(user.uid)
-    const arrayOfObj = Object.entries(recipes as saveRecipeType).map(e => ({
-      [e[0]]: e[1]
-    }))
-    const arrformobj = Object.values(arrayOfObj)
-      .map(e => Object.values(e))
-      .flat()
-    console.log('arrayOfObj', arrayOfObj)
-    console.log('arrformobj', arrformobj)
-    return arrformobj
-  }
 }
 
 const Login = () => {
@@ -92,7 +76,7 @@ const Login = () => {
 
     try {
       const currentUser = await login(loginDetails.email, loginDetails.password)
-      const userRecipes = await retriveUserRecipesFromDB(currentUser)
+      const userRecipes = await getUserRecipes(currentUser)
       if (userRecipes) {
         window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes))
       }

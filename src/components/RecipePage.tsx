@@ -6,7 +6,7 @@ import { auth } from '../firebase/firebaseConfig'
 import { useParams, useNavigate } from 'react-router-dom'
 import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
-import { addDocument as addRecipe, getAllUserRecipes } from '../firebase/firebase'
+import { addRecipe, getUserRecipes } from '../firebase/firebase'
 
 interface stepType {
   number: number
@@ -64,17 +64,17 @@ const RecipePage = () => {
   const [recipeSaved, setRecipeSaved] = useState<boolean>(false)
   const [disableSaveButton, setDisableSaveButton] = useState<boolean>(false)
 
+  // TODO: Add a loading spinner while the recipe is being fetched
   useEffect(() => {
     if (user) {
-      getAllUserRecipes(user.uid).then(recipes => {
+      getUserRecipes(user).then(recipes => {
         console.log('allRecipes', recipes)
-        for (const recipeId in recipes) {
-          window.sessionStorage.setItem(recipeId, JSON.stringify(recipes[recipeId]))
+        const recipe = recipes.find((recipe: any) => recipe.id === recipeId)
+        console.log('recipe RecipePage component', recipe)
+        if (recipe) {
+          setDisableSaveButton(true)
         }
       })
-      if (window.sessionStorage.getItem(recipeId as string)) {
-        setDisableSaveButton(true)
-      }
     }
   }, [user, recipeId])
 
@@ -128,9 +128,18 @@ const RecipePage = () => {
       })
       setRecipeSaved(true)
       setDisableSaveButton(true)
-      window.sessionStorage.set(
-        recipeId,
-        JSON.stringify({ recipeId, title: recipeData.title, img: recipeData.image })
+      const localUserRecipes = JSON.parse(
+        window.sessionStorage.getItem('userRecipes') as string
+      )
+      console.log('localUserRecipes', localUserRecipes)
+      window.sessionStorage.setItem(
+        recipeId as string,
+        JSON.stringify({
+          ...localUserRecipes,
+          recipeId,
+          title: recipeData.title,
+          img: recipeData.image
+        })
       )
       setTimeout(() => {
         setRecipeSaved(false)
@@ -207,18 +216,22 @@ const RecipePage = () => {
           <div id='recipe-ingredients-wrapper'>
             <h3 id='recipe-ingredients-subheading'>Ingredients</h3>
             <ul id='recipe-ingredients-list'>
-              {recipeData.ingredients.map((ingredient: string) => (
-                <li id='recipe-ingredient' className='recipe-list-item' key={ingredient}>
-                  {ingredient}
-                </li>
-              ))}
+              {recipeData?.ingredients &&
+                recipeData.ingredients?.map((ingredient: string) => (
+                  <li
+                    id='recipe-ingredient'
+                    className='recipe-list-item'
+                    key={ingredient}>
+                    {ingredient}
+                  </li>
+                ))}
             </ul>
           </div>
           <div id='recipe-steps-wrapper'>
             <h3 id='recipe-steps-subheading'>Instructions</h3>
             <ol id='recipe-steps'>
               {recipeData?.steps &&
-                recipeData.steps.map((instruction: stepType) => (
+                recipeData.steps?.map((instruction: stepType) => (
                   <li
                     id='recipe-step'
                     className='recipe-list-item'
