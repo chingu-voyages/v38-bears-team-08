@@ -16,8 +16,11 @@ const SavedRecipes = () => {
   const user = useFirebaseAuth() || auth.currentUser
   const [userRecipes, setUserRecipes] = useState<saveRecipeType[] | []>()
 
-  const deleteSavedRecipe = async (recipeId: string) => {
-    const result = await deleteRecipe(recipeId)
+  const deleteSavedRecipe = async (recipeId: string, user: User) => {
+    const result = await deleteRecipe(recipeId, user)
+    // TODO: Catch possible server error
+    // TODO: Display error message, either from server of recipe not found
+    // TODO: Display success message and remove/update recipe on page
     console.log(result)
     return result
   }
@@ -35,7 +38,7 @@ const SavedRecipes = () => {
             <div id='saved-recipe-wrapper' key={userRecipe.id}>
               <div
                 id='delete-recipe-btn'
-                onClick={() => deleteSavedRecipe(userRecipe.id)}>
+                onClick={() => deleteSavedRecipe(userRecipe.id, user as User)}>
                 <ImCross />
               </div>
               <Link to={`/${userRecipe.id}`} id='saved-recipe-link'>

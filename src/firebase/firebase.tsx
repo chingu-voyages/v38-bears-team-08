@@ -15,12 +15,9 @@ import {
   getFirestore,
   doc,
   getDoc,
-  CollectionReference,
-  addDoc,
-  deleteDoc,
-  setDoc,
-  query,
-  where
+  updateDoc,
+  deleteField,
+  setDoc
 } from 'firebase/firestore'
 
 // Initialize Firestore service
@@ -115,14 +112,34 @@ async function getUserRecipes(user: User) {
     }
   } else return void 0
 }
+
+/**
+ * @param {User} user
+ * To be used in deleteRecipe
+ */
+const updateSessionStorage = (recipeId: string) => {
+  const userRecipes = window.sessionStorage.getItem('userRecipes')
+  if (userRecipes) {
+    const recipes = JSON.parse(userRecipes as string)
+    const updatedUserRecipes = recipes.filter(
+      (recipe: saveRecipeType) => recipe.id !== recipeId
+    )
+    window.sessionStorage.setItem('userRecipes', JSON.stringify(updatedUserRecipes))
+  } else return void 0
+}
 // TODO: Test function
-const deleteRecipe = async (recipeId: string) => {
+const deleteRecipe = async (recipeId: string, user: User) => {
   try {
-    const docRef = doc(firestore, 'recipes', recipeId)
+    const docRef = doc(firestore, `recipes/${user.uid}`)
+    console.log('docRef', docRef)
+    console.log('docRef.id', docRef.id)
     const docSnap = await getDoc(docRef)
-    console.log('docSnap', docSnap)
+    console.log('docSnap.exists()', docSnap.exists())
+    console.log('docSnap.data()', docSnap.data())
+
     if (docSnap.exists()) {
-      await deleteDoc(doc(firestore, 'recipes', recipeId))
+      await updateDoc(docRef, { [recipeId]: deleteField() })
+      updateSessionStorage(recipeId)
       return {
         message: 'Recipe deleted',
         code: 200
@@ -135,7 +152,7 @@ const deleteRecipe = async (recipeId: string) => {
     }
   } catch (error: errorObject | any) {
     console.log(error)
-    throw new Error(error.message)
+    throw new Error(error)
   }
 }
 
