@@ -11,7 +11,7 @@ import AuthenticatedRoute from './components/AuthenticatedRoute'
 
 function App() {
   return (
-    <div className='App'>
+    <div id='app'>
       <FirebaseAuthProvider>
         <Router>
           <Header />

@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  SyntheticEvent,
-  FunctionComponent
-} from 'react'
+import { useState, useEffect, useRef, useCallback, SyntheticEvent, FC } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ingredientOptions from '../data/ingredientOptions'
@@ -48,9 +41,7 @@ const autoComplete = (ingredient: string) => {
  *
  *  This component is to add/create a list of ingridients
  */
-const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
-  setIngredients
-}) => {
+const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients }) => {
   const [ingredient, setIngredient] = useState('')
   const [ingredientsList, setIngridientsList] = useState<string[]>([])
   const [options, setOptions] = useState<optionType[]>([])
@@ -156,10 +147,12 @@ const AutoIngredientSearch: FunctionComponent<AutoIngredientSearchProps> = ({
   )
 }
 
-const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
+const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 16))
   const [page, setPage] = useState<number>(0)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false) // to show spinner
+
+  console.count('RecipiesView')
 
   console.log('RecipiesView', recipes)
   console.log('shownRecipes', shownRecipes)
@@ -187,6 +180,7 @@ const RecipiesView: FunctionComponent<RecipiesViewProps> = ({ recipes }) => {
 
   useEffect(() => {
     /* Resets infinite scroll when a new recipes are loaded */
+    console.log('useEffect page', page)
     const resetPages = () => {
       setPage(1)
     }
@@ -217,10 +211,13 @@ export default function GetRecipies() {
   const [recipes, setRecipies] = useState<recipeType[]>([])
   const [error, setError] = useState('')
 
+  console.count('GetRecipies')
+
   const handleClick = async () => {
     console.log('ingredients', ingredients)
     if (ingredients.length > 0) {
       try {
+        console.count('handleClick')
         const url = `/.netlify/functions/get-recipes?ingredients=${ingredients}`
         const response = await axios.get(url)
         setRecipies(response.data)
@@ -248,7 +245,8 @@ export default function GetRecipies() {
         </button>
         {error && <p className='error-msg'>{error}</p>}
       </div>
-      {recipes.length !== 0 ? <RecipiesView recipes={recipes} /> : null}
+      {console.log('recipes.length', recipes.length)}
+      {recipes.length > 0 ? <RecipiesView recipes={recipes} /> : null}
     </>
   )
 }

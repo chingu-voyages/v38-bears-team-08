@@ -68,10 +68,10 @@ const RecipePage = () => {
   useEffect(() => {
     if (user) {
       getUserRecipes(user).then(recipes => {
-        console.log('allRecipes', recipes)
-        const recipe = recipes.find((recipe: any) => recipe.id === recipeId)
-        console.log('recipe RecipePage component', recipe)
-        if (recipe) {
+        const recipe = recipes.filter((recipe: any) => {
+          return Number(recipe.id) === Number(recipeId)
+        })
+        if (recipe.length > 0) {
           setDisableSaveButton(true)
         }
       })
@@ -121,6 +121,8 @@ const RecipePage = () => {
 
   const saveRecipe = async () => {
     if (user) {
+      console.log('user', user.uid)
+
       await addRecipe(user.uid, {
         id: recipeId as string,
         title: recipeData.title,
@@ -128,21 +130,9 @@ const RecipePage = () => {
       })
       setRecipeSaved(true)
       setDisableSaveButton(true)
-      const localUserRecipes = JSON.parse(
-        window.sessionStorage.getItem('userRecipes') as string
-      )
-      console.log('localUserRecipes', localUserRecipes)
-      window.sessionStorage.setItem(
-        recipeId as string,
-        JSON.stringify({
-          ...localUserRecipes,
-          recipeId,
-          title: recipeData.title,
-          img: recipeData.image
-        })
-      )
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setRecipeSaved(false)
+        clearTimeout(timeout)
       }, 5000)
       console.log('user recipe has been added to the db')
     } else {

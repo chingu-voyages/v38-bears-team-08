@@ -76,10 +76,7 @@ const Login = () => {
 
     try {
       const currentUser = await login(loginDetails.email, loginDetails.password)
-      const userRecipes = await getUserRecipes(currentUser)
-      if (userRecipes) {
-        window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes))
-      }
+      await getUserRecipes(currentUser)
     } catch (error: serverErrorsType | any) {
       setServerError(error)
     }

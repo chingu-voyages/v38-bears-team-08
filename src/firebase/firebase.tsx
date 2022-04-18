@@ -37,26 +37,17 @@ interface errorObject {
   code: number
 }
 
-const docs = getDocs(collectionRef).then(
-  snapshot => {
-    console.log('snapshot', snapshot.docs)
-    return snapshot.docs.map(doc => {
-      return {
-        id: doc.id,
-        ...doc.data()
-      }
-    }) // END map
-  },
-  error => {
-    console.log('error', error)
-  }
-) //   END then
-// console.log('collectionRef', collectionRef)
-
+/**
+ * To be used in addRecipe
+ * @param {saveRecipeType} recipe
+ * @returns void
+ */
+const addRecipeToSessionStorage = (recipe: saveRecipeType) => {
+  const userRecipes = JSON.parse(window.sessionStorage.getItem('userRecipes') as string)
+  window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes.concat(recipe)))
+}
 const addRecipe = async (userId: string, recipe: saveRecipeType) => {
   try {
-    // const recipeToSave =
-    //   Object.keys(recipe).length > 0 ? { [recipe.id]: { ...recipe } } : {}
     const docRef = await setDoc(
       doc(firestore, 'recipes', userId),
       {
@@ -64,17 +55,13 @@ const addRecipe = async (userId: string, recipe: saveRecipeType) => {
       },
       { merge: true }
     )
+    addRecipeToSessionStorage(recipe)
     console.log('Document written with ID: ', docRef)
   } catch (e) {
     console.error('Error adding document: ', e)
   }
 }
-// const docRef = doc(firestore, 'recipes', 'dvMw9D9zqVg9HRF0uriVZRWWCgD3')
-// const docSnap = getDoc(docRef).then(docSnap => {
-//   console.log('Document data:', docSnap.data())
-// })
-// TODO: Add firestore rules
-// TODO: create and test function
+
 const getAllUserRecipes = async (userId: string) => {
   try {
     const userRecipes = await getDoc(doc(firestore, 'recipes', userId))
@@ -114,10 +101,10 @@ async function getUserRecipes(user: User) {
 }
 
 /**
- * @param {User} user
+ * @param {string} recipeId
  * To be used in deleteRecipe
  */
-const updateSessionStorage = (recipeId: string) => {
+const removeRecipeFromSessionStorage = (recipeId: string) => {
   const userRecipes = window.sessionStorage.getItem('userRecipes')
   if (userRecipes) {
     const recipes = JSON.parse(userRecipes as string)
@@ -127,7 +114,7 @@ const updateSessionStorage = (recipeId: string) => {
     window.sessionStorage.setItem('userRecipes', JSON.stringify(updatedUserRecipes))
   } else return void 0
 }
-// TODO: Test function
+
 const deleteRecipe = async (recipeId: string, user: User) => {
   try {
     const docRef = doc(firestore, `recipes/${user.uid}`)
@@ -136,10 +123,11 @@ const deleteRecipe = async (recipeId: string, user: User) => {
     const docSnap = await getDoc(docRef)
     console.log('docSnap.exists()', docSnap.exists())
     console.log('docSnap.data()', docSnap.data())
-
-    if (docSnap.exists()) {
+    const recipeExists = docSnap.data()?.[recipeId]
+    console.log('docSnap.data()[recipeId]', recipeExists)
+    if (docSnap.exists() && recipeExists) {
       await updateDoc(docRef, { [recipeId]: deleteField() })
-      updateSessionStorage(recipeId)
+      removeRecipeFromSessionStorage(recipeId)
       return {
         message: 'Recipe deleted',
         code: 200

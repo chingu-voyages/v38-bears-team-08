@@ -646,13 +646,13 @@ ul li a:hover {
   text-align: center;
 }
 
-#saved-recipe-link {
+.saved-recipe-link {
   text-decoration: none;
   width: 309px;
   margin: auto;
 }
 
-#saved-recipe-wrapper {
+.saved-recipe-wrapper {
   height: 263px;
   width: 309px;
   margin: auto;
@@ -661,7 +661,7 @@ ul li a:hover {
   justify-content: center;
 }
 
-#delete-recipe-btn {
+.delete-recipe-btn {
   position: absolute;
   color: white;
   left: 0px;
@@ -673,11 +673,11 @@ ul li a:hover {
   z-index: 2;
 }
 
-#delete-recipe-btn:hover {
+.delete-recipe-btn:hover {
   color: crimson;
 }
 
-#saved-recipe {
+.saved-recipe {
   height: 263px;
   width: 309px;
   border-radius: 19px 65px 65px 65px;
@@ -686,7 +686,7 @@ ul li a:hover {
   justify-content: center;
 }
 
-#saved-recipe-title {
+.saved-recipe-title {
   color: #fff;
   font-size: 22px;
   font-weight: 600;
@@ -695,8 +695,23 @@ ul li a:hover {
   width: 90%;
 }
 
-#saved-recipe:hover #saved-recipe-title {
+.saved-recipe:hover #saved-recipe-title {
   text-decoration: underline;
 }
 
+#save-message {
+  text-align: center;
+  height: 1em;
+  margin-bottom: 1em;
+}
+
+#message-success {
+  text-align: center;
+  color: #08ce01;
+}
+
+#message-error {
+  text-align: center;
+  color: #ff0000;
+}
 /* END of Saved Recipes Component */
