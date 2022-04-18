@@ -160,6 +160,14 @@ body {
   -ms-grid-columns: repeat(auto-fit, minmax(312px, 1fr));
   grid-template-columns: repeat(auto-fit, minmax(312px, 1fr));
   margin-top: 2.8em;
+  position: relative;
+}
+
+.undefined /* Loader style */ {
+  margin-left: 50%;
+  display: flex;
+  position: relative;
+  top: 160px;
 }
 
 #recipe-link {
