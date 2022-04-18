@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef, useCallback, SyntheticEvent, FC } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -150,7 +151,6 @@ const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients })
 const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 16))
   const [page, setPage] = useState<number>(0)
-  const [loading, setLoading] = useState(false) // to show spinner
 
   console.count('RecipiesView')
 
@@ -189,7 +189,9 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
 
   return (
     <div id='recipes-grid'>
-      {/* <Triangle ariaLabel='loading-indicator' /> */}
+      {/* {
+        loading ? <Triangle ariaLabel='loading-indicator'/> : null
+      } */}
       {shownRecipes.map((recipe: recipeType, index: number) => (
         <Link key={recipe.id} to={`${recipe.id}`} id='recipe-link'>
           <div ref={shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe'>
@@ -210,6 +212,7 @@ export default function GetRecipies() {
   const [ingredients, setIngredients] = useState<string[]>([])
   const [recipes, setRecipies] = useState<recipeType[]>([])
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   console.count('GetRecipies')
 
@@ -219,11 +222,15 @@ export default function GetRecipies() {
       try {
         console.count('handleClick')
         const url = `/.netlify/functions/get-recipes?ingredients=${ingredients}`
+        setRecipies([])
+        setLoading(true)
         const response = await axios.get(url)
         setRecipies(response.data)
+        setLoading(false)
         console.log('handleSubmit in GetRecipies', response.data)
         setError('')
       } catch (err) {
+        setLoading(false)
         setError('Error: No recipes found')
         console.log(err)
       }
@@ -247,6 +254,9 @@ export default function GetRecipies() {
       </div>
       {console.log('recipes.length', recipes.length)}
       {recipes.length > 0 ? <RecipiesView recipes={recipes} /> : null}
+      {
+        loading ? <Triangle ariaLabel='loading-indicator'/> : null
+      }
     </>
   )
 }

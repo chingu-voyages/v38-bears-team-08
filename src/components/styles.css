@@ -160,11 +160,25 @@ body {
   -ms-grid-columns: repeat(auto-fit, minmax(312px, 1fr));
   grid-template-columns: repeat(auto-fit, minmax(312px, 1fr));
   margin-top: 2.8em;
+  position: relative;
+}
+
+.undefined /* Loader style */ {
+  margin-left: 50%;
+  display: flex;
+  position: relative;
+  top: 160px;
 }
 
 #recipe-link {
   width: 314px;
   margin: auto;
+  text-decoration: none;
+  color: black;
+}
+
+#recipe-link:hover #recipe-title {
+  background-color: #3c81f6b3;
 }
 
 #recipe {
@@ -181,6 +195,7 @@ body {
   height: 95px;
   text-align: center;
   padding: 0.5em 0.3em;
+  transition: background-color 0.25s ease-in-out;
 }
 
 #recipe-image {

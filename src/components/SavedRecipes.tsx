@@ -25,6 +25,10 @@ const SavedRecipes = () => {
     type: ''
   })
 
+  useEffect(() => {
+    getUserRecipes(user as User).then(userRecipes => setUserRecipes(userRecipes))
+  }, [user])
+
   const deleteSavedRecipe = async (recipeId: string, user: User) => {
     try {
       const result = await deleteRecipe(recipeId, user)
