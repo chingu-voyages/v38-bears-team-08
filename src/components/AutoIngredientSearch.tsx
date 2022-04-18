@@ -150,12 +150,12 @@ const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients })
 
 const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 16))
-  const [page, setPage] = useState<number>(0)
-
+  const [page, setPage] = useState<number>(1)
+  
   console.count('RecipiesView')
 
   console.log('RecipiesView', recipes)
-  console.log('shownRecipes', shownRecipes)
+  // console.log('shownRecipes', shownRecipes)
   const observer = useRef<IntersectionObserver>()
   const lastRecipeRef = useCallback(node => {
     if (observer.current) observer.current.disconnect()
@@ -170,10 +170,12 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
 
   useEffect(() => {
     const loadNewRecipes = () => {
-      console.log('loading recipes')
-      setTimeout(() => {
-        setShownRecipes(recipes.slice(0, 16 * page))
-      }, 500)
+      if (page !== 1) {
+        console.log('loading recipes')
+        setTimeout(() => {
+          setShownRecipes(recipes.slice(0, 16 * page))
+        }, 500)
+      }
     }
     loadNewRecipes()
   }, [page, recipes])
@@ -182,16 +184,15 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
     /* Resets infinite scroll when a new recipes are loaded */
     console.log('useEffect page', page)
     const resetPages = () => {
-      setPage(1)
+      if (shownRecipes.length === recipes.length) {
+        setPage(1)
+      }
     }
     resetPages()
-  }, [recipes])
+  }, [page, recipes, shownRecipes.length])
 
   return (
     <div id='recipes-grid'>
-      {/* {
-        loading ? <Triangle ariaLabel='loading-indicator'/> : null
-      } */}
       {shownRecipes.map((recipe: recipeType, index: number) => (
         <Link key={recipe.id} to={`${recipe.id}`} id='recipe-link'>
           <div ref={shownRecipes.length - 1 === index ? lastRecipeRef : null} id='recipe'>
@@ -225,9 +226,8 @@ export default function GetRecipies() {
         setRecipies([])
         setLoading(true)
         const response = await axios.get(url)
-        setRecipies(response.data)
         setLoading(false)
-        console.log('handleSubmit in GetRecipies', response.data)
+        setRecipies(response.data)
         setError('')
       } catch (err) {
         setLoading(false)
