@@ -47,6 +47,10 @@ const SavedRecipes = () => {
     }
   }
 
+  useEffect(() => {
+    getUserRecipes(user as User).then(userRecipes => setUserRecipes(userRecipes))
+  }, [user])
+
   const RenderMessage: FC<messageType> = ({ message, type }) => {
     if (type === 'success') return <div id='message-success'>{message}</div>
     else if (type === 'error') return <div id='message-error'>{message}</div>
