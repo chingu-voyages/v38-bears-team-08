@@ -173,6 +173,12 @@ body {
 #recipe-link {
   width: 314px;
   margin: auto;
+  text-decoration: none;
+  color: black;
+}
+
+#recipe-link:hover #recipe-title {
+  background-color: #3c81f6b3;
 }
 
 #recipe {
@@ -189,6 +195,7 @@ body {
   height: 95px;
   text-align: center;
   padding: 0.5em 0.3em;
+  transition: background-color 0.25s ease-in-out;
 }
 
 #recipe-image {
