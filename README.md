@@ -1,3 +1,29 @@
+## Recipes By Ingredients
+
+### [Live Site](https://recipes-by-ingredients.netlify.app/)
+
+RBI is a application that allows users to to find a range of recipes based on ingredients they would like to use. Detailed recipe information includes steps to make the recipe, nutritional information and specific ingredient amounts to use for the recipe.
+
+## Features
+
+- Enter in a selection of ingredients and get a list recipes which use the ingredients entered.
+- View more detailed information about each recipe.
+- Register an account using an email, username and password.
+- Authenticated users can save recipes that they like to view later.
+- Users with valid emails can reset a password that they have forgotten.
+
+## Technologies
+
+The project was written in TypeScript.
+
+### Frontend
+- React
+- React-router
+- HTML and CSS
+
+### Backend
+- Firebase
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
