@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef, useCallback, SyntheticEvent, FC } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
@@ -163,8 +163,9 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   useEffect(() => {
     const loadNewRecipes = () => {
       if (page !== 1) {
-        setTimeout(() => {
+        const newRecipesTimeout = setTimeout(() => {
           setShownRecipes(recipes.slice(0, 16 * page))
+          clearTimeout(newRecipesTimeout)
         }, 500)
       }
     }
@@ -205,6 +206,8 @@ export default function GetRecipies() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
 
+  const location = useLocation()
+
   const handleClick = async () => {
     if (ingredients.length > 0) {
       try {
@@ -214,6 +217,8 @@ export default function GetRecipies() {
         const response = await axios.get(url)
         setLoading(false)
         setRecipies(response.data)
+        sessionStorage.setItem('recipes', JSON.stringify(response.data))
+        sessionStorage.setItem('pageKey', location.key)
         setError('')
       } catch (err) {
         setLoading(false)
@@ -223,6 +228,18 @@ export default function GetRecipies() {
       setError('Error: No ingredients entered')
     }
   }
+
+  useEffect(() => {
+    const getRecipesFromStorage = () => {
+      const storedRecipesCheck = sessionStorage.getItem('recipes')
+      const pageKey = sessionStorage.getItem('pageKey')
+      if (storedRecipesCheck && location.key === pageKey) {
+        const storedRecipes = JSON.parse(storedRecipesCheck)
+        setRecipies(storedRecipes)
+      }
+    }
+    getRecipesFromStorage()
+  }, [])
   // TODO: Imporve error msg
   return (
     <>
