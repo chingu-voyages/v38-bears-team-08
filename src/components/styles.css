@@ -164,8 +164,6 @@ body {
 }
 
 .undefined /* Loader style */ {
-  margin-left: 50%;
-  display: flex;
   position: relative;
   top: 160px;
 }
