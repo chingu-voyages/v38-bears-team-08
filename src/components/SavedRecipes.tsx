@@ -42,7 +42,6 @@ const SavedRecipes = () => {
       }, 4000)
       getUserRecipes(user as User).then(userRecipes => setUserRecipes(userRecipes))
     } catch (error: any) {
-      console.log('server Error:', error)
       setSaveMessage({ message: error.message, type: 'error' })
       const timeout = setTimeout(() => {
         setSaveMessage({ message: '', type: '' })

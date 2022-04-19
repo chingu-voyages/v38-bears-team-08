@@ -40,7 +40,6 @@ body {
 }
 /* END OF General styling */
 
-
 /* Home (AutoIngredientSearch component) */
 #search-component{
   display: flex;
@@ -503,21 +502,6 @@ ul li a:hover {
   position: relative;
 }
 
-#triangle {
-  margin: 0 auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  padding: 13px;
-  width: 10em;
-  height: 10em;
-  -webkit-transform: translateX(-50%);
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  -o-transform: translateX(-50%);
-  transform: translateX(-50%);
-}
-
 #save-success-message {
   position: absolute;
   top: -25px;
@@ -745,3 +729,41 @@ ul li a:hover {
   color: #ff0000;
 }
 /* END of Saved Recipes Component */
+
+/* Start of Triangle component(spinner) */
+#triangle {
+  margin: 0 auto;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  padding: 13px;
+  width: 10em;
+  height: 10em;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+/* Overides the default behaviour of component
+   which gives it a margin-left of 50%. Why?
+*/
+.undefined {
+  margin: 0!important;
+}
+
+@media screen and (orientation:landscape) and (max-width: 920px) {
+  #triangle {
+    top: 30%;
+    left: 50%;
+    width: 8em;
+    height: 8em;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* END of Triangle component(spinner) */

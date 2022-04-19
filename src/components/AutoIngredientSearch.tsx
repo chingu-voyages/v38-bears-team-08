@@ -6,8 +6,6 @@ import ingredientOptions from '../data/ingredientOptions'
 import './styles.css'
 import { Triangle } from 'react-loader-spinner'
 
-console.log('apiKey', process.env.REACT_APP_API_KEY)
-
 type optionType = {
   label: string
   value: string
@@ -52,18 +50,17 @@ const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients })
     const fetchRecipies = async () => {
       try {
         const matchingIngredients = autoComplete(ingredient)
-        console.log('handleChange', matchingIngredients)
+
         const opts = matchingIngredients.map((item: ingredientType) => ({
           label: item.name,
           value: item.name,
           id: item.id
         }))
         setOptions(opts)
-        console.log('options', opts)
+
         setError('')
       } catch (err) {
         setError('Error: No recipes found')
-        console.log(err)
       }
     }
     if (ingredient) {
@@ -151,18 +148,13 @@ const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients })
 const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   const [shownRecipes, setShownRecipes] = useState<recipeType[]>(recipes.slice(0, 16))
   const [page, setPage] = useState<number>(1)
-  
-  console.count('RecipiesView')
 
-  console.log('RecipiesView', recipes)
-  // console.log('shownRecipes', shownRecipes)
   const observer = useRef<IntersectionObserver>()
   const lastRecipeRef = useCallback(node => {
     if (observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
         setPage(page => page + 1)
-        console.log(page)
       }
     })
     if (node) observer.current.observe(node)
@@ -171,7 +163,6 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
   useEffect(() => {
     const loadNewRecipes = () => {
       if (page !== 1) {
-        console.log('loading recipes')
         setTimeout(() => {
           setShownRecipes(recipes.slice(0, 16 * page))
         }, 500)
@@ -182,7 +173,6 @@ const RecipiesView: FC<RecipiesViewProps> = ({ recipes }) => {
 
   useEffect(() => {
     /* Resets infinite scroll when a new recipes are loaded */
-    console.log('useEffect page', page)
     const resetPages = () => {
       if (shownRecipes.length === recipes.length) {
         setPage(1)
@@ -215,13 +205,9 @@ export default function GetRecipies() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState<boolean>(false)
 
-  console.count('GetRecipies')
-
   const handleClick = async () => {
-    console.log('ingredients', ingredients)
     if (ingredients.length > 0) {
       try {
-        console.count('handleClick')
         const url = `/.netlify/functions/get-recipes?ingredients=${ingredients}`
         setRecipies([])
         setLoading(true)
@@ -232,7 +218,6 @@ export default function GetRecipies() {
       } catch (err) {
         setLoading(false)
         setError('Error: No recipes found')
-        console.log(err)
       }
     } else {
       setError('Error: No ingredients entered')
@@ -252,11 +237,12 @@ export default function GetRecipies() {
         </button>
         {error && <p className='error-msg'>{error}</p>}
       </div>
-      {console.log('recipes.length', recipes.length)}
+      {loading ? (
+        <div id='triangle'>
+          <Triangle ariaLabel='loading-indicator' />
+        </div>
+      ) : null}
       {recipes.length > 0 ? <RecipiesView recipes={recipes} /> : null}
-      {
-        loading ? <Triangle ariaLabel='loading-indicator'/> : null
-      }
     </>
   )
 }

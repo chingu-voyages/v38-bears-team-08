@@ -37,15 +37,37 @@ interface messageType {
   type: string
 }
 
+interface useMessageType {
+  message: string
+  type: string
+  time: number
+}
+
 const getRecipeInfo = async (recipeId: string) => {
   try {
     const url = `/.netlify/functions/get-recipe/${recipeId}`
     const response = await axios.get(url)
-    console.log(response.data)
     return response.data
   } catch (error: any) {
     throw Error(error)
   }
+}
+
+const useMessage = (message: string, type: string, time: number = 5000) => {
+  const [messageState, setMessageState] = useState<messageType>({
+    message: '',
+    type: ''
+  })
+
+  useEffect(() => {
+    setMessageState({ message, type })
+    const timeout = setTimeout(() => {
+      setMessageState({ message: '', type: '' })
+      clearTimeout(timeout)
+    }, time)
+  }, [message, type])
+
+  return [messageState, setMessageState]
 }
 
 const RecipePage = () => {
@@ -71,6 +93,8 @@ const RecipePage = () => {
     type: ''
   })
 
+  const [messageState, setMessageState] = useMessage('', '')
+
   const user = useFirebaseAuth() || auth.currentUser
   const [recipeSaved, setRecipeSaved] = useState<boolean>(false)
   const [disableSaveButton, setDisableSaveButton] = useState<boolean>(false)
@@ -92,7 +116,6 @@ const RecipePage = () => {
 
   useEffect(() => {
     const loadRecipeInfo = async () => {
-      // console.log(await getRecipeInfo(recipeId as string))
       try {
         setLoading(true)
         const {
@@ -128,15 +151,17 @@ const RecipePage = () => {
         })
         setLoading(false)
       } catch (error: any) {
-        console.log('err', error)
         setLoading(false)
-        if (error.message.includes('404'))
+        if (error.message.includes('404')) {
           setSaveMessage({ message: 'Recipe not found', type: 'error' })
-        else setSaveMessage({ message: error.message, type: 'error' })
-        const timeout = setTimeout(() => {
-          setSaveMessage({ message: '', type: '' })
-          clearTimeout(timeout)
-        }, 5000)
+          // setMessageState({ message: 'Recipe not found', type: 'error' })
+        } else {
+          setSaveMessage({ message: error.message, type: 'error' })
+          const timeout = setTimeout(() => {
+            setSaveMessage({ message: '', type: '' })
+            clearTimeout(timeout)
+          }, 5000)
+        }
       }
     }
     loadRecipeInfo()
@@ -144,8 +169,6 @@ const RecipePage = () => {
 
   const saveRecipe = async () => {
     if (user) {
-      console.log('user', user.uid)
-
       await addRecipe(user.uid, {
         id: recipeId as string,
         title: recipeData.title,
@@ -157,7 +180,6 @@ const RecipePage = () => {
         setRecipeSaved(false)
         clearTimeout(timeout)
       }, 5000)
-      console.log('user recipe has been added to the db')
     } else {
       navigate('/login', {
         state: { message: `Must be logged in to save ${recipeData.title}` }
@@ -244,11 +266,11 @@ const RecipePage = () => {
                   ))}
               </ul>
             </div>
-            <div id='recipe-steps-wrapper'>
-              <h3 id='recipe-steps-subheading'>Instructions</h3>
-              <ol id='recipe-steps'>
-                {recipeData?.steps &&
-                  recipeData.steps?.map((instruction: stepType) => (
+            {recipeData?.steps && (
+              <div id='recipe-steps-wrapper'>
+                <h3 id='recipe-steps-subheading'>Instructions</h3>
+                <ol id='recipe-steps'>
+                  {recipeData.steps.map((instruction: stepType) => (
                     <li
                       id='recipe-step'
                       className='recipe-list-item'
@@ -256,8 +278,9 @@ const RecipePage = () => {
                       {instruction?.step}
                     </li>
                   ))}
-              </ol>
-            </div>
+                </ol>
+              </div>
+            )}
           </div>
         </div>
       )}

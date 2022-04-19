@@ -15,12 +15,6 @@ interface serverErrorsType {
   message: string
 }
 
-interface saveRecipeType {
-  id: string
-  title: string
-  img: string
-}
-
 const makeMessageHumanReadable = (message: string) => {
   const newMessage = message.substring(message.lastIndexOf('/') + 1).slice(0, -2)
   const errorMessage = newMessage.charAt(0).toUpperCase() + newMessage.slice(1)
