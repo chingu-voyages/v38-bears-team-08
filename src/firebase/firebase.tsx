@@ -10,7 +10,6 @@ import {
 } from 'firebase/auth'
 import { auth } from './firebaseConfig'
 import {
-  getDocs,
   collection,
   getFirestore,
   doc,
@@ -48,7 +47,7 @@ const addRecipeToSessionStorage = (recipe: saveRecipeType) => {
 }
 const addRecipe = async (userId: string, recipe: saveRecipeType) => {
   try {
-    const docRef = await setDoc(
+    await setDoc(
       doc(firestore, 'recipes', userId),
       {
         [recipe.id]: { ...recipe }
@@ -56,19 +55,16 @@ const addRecipe = async (userId: string, recipe: saveRecipeType) => {
       { merge: true }
     )
     addRecipeToSessionStorage(recipe)
-    console.log('Document written with ID: ', docRef)
-  } catch (e) {
-    console.error('Error adding document: ', e)
+  } catch (error: errorObject | any) {
+    throw new Error(error)
   }
 }
 
 const getAllUserRecipes = async (userId: string) => {
   try {
     const userRecipes = await getDoc(doc(firestore, 'recipes', userId))
-    console.log('userRecipes', userRecipes.data())
     return userRecipes.data()
   } catch (error: errorObject | any) {
-    console.log(error)
     throw new Error(error)
   }
 }
@@ -88,12 +84,10 @@ async function getUserRecipes(user: User) {
       const userRecipes = JSON.parse(
         window.sessionStorage.getItem('userRecipes') as string
       )
-      console.log('userRecipes from sessionStorage', userRecipes)
       return userRecipes
     } else {
       const recipes = await getAllUserRecipes(user.uid)
       const userRecipes = Object.entries(recipes as saveRecipeType).map(r => r[1])
-      console.log('userRecipes from db', userRecipes)
       window.sessionStorage.setItem('userRecipes', JSON.stringify(userRecipes))
       return userRecipes
     }
@@ -118,13 +112,8 @@ const removeRecipeFromSessionStorage = (recipeId: string) => {
 const deleteRecipe = async (recipeId: string, user: User) => {
   try {
     const docRef = doc(firestore, `recipes/${user.uid}`)
-    console.log('docRef', docRef)
-    console.log('docRef.id', docRef.id)
     const docSnap = await getDoc(docRef)
-    console.log('docSnap.exists()', docSnap.exists())
-    console.log('docSnap.data()', docSnap.data())
     const recipeExists = docSnap.data()?.[recipeId]
-    console.log('docSnap.data()[recipeId]', recipeExists)
     if (docSnap.exists() && recipeExists) {
       await updateDoc(docRef, { [recipeId]: deleteField() })
       removeRecipeFromSessionStorage(recipeId)
@@ -139,7 +128,6 @@ const deleteRecipe = async (recipeId: string, user: User) => {
       }
     }
   } catch (error: errorObject | any) {
-    console.log(error)
     throw new Error(error)
   }
 }
@@ -151,15 +139,11 @@ const registerUser = async (username: string, email: string, password: string) =
       displayName: username
     })
     // await addDocument(newUser.user.uid, {})
-
-    console.log('registerUser newUser', newUser)
     return {
       message: 'You have successfully registered',
       code: 200
     }
   } catch (error: errorObject | any) {
-    console.log()
-    console.log('registerUser error', error)
     throw new Error(error)
   }
 }
@@ -168,27 +152,21 @@ const login = async (email: string, password: string) => {
   try {
     await setPersistence(auth, browserSessionPersistence)
     const currentUser = await signInWithEmailAndPassword(auth, email, password)
-    console.log('currentUser', currentUser)
     return currentUser.user
   } catch (error: errorObject | any) {
-    console.log('error.message', error.message)
-    console.log('error.code', error.code)
-    console.log('error.name', error.name)
     throw new Error(error.message)
   }
 }
 
 const logout = async () => {
   try {
-    const logOutUser = await signOut(auth)
-    console.log('logOutUser', logOutUser)
+    await signOut(auth)
     window.sessionStorage.clear()
     return {
       message: 'You have successfully logged out',
       code: 200
     }
   } catch (error: errorObject | any) {
-    console.log(error)
     throw new Error(error.message)
   }
 }
@@ -201,7 +179,6 @@ const resetPassword = async (email: string) => {
       code: 200
     }
   } catch (error: errorObject | any) {
-    console.log(error)
     throw new Error(error.message)
   }
 }

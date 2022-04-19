@@ -19,12 +19,11 @@ const FirebaseAuthProvider: FC = ({ children }) => {
     const userKey = Object.keys(window.sessionStorage).filter(it =>
       it.startsWith('firebase:authUser')
     )[0]
-    console.log('userKey', userKey)
+
     if (userKey) {
       const localUser = userKey
         ? JSON.parse(sessionStorage.getItem(userKey) || '{}')
         : undefined
-      console.log('localUser', localUser)
       setUser(localUser)
     }
   }, [])
