@@ -72,8 +72,8 @@ const AutoIngredientSearch: FC<AutoIngredientSearchProps> = ({ setIngredients })
     setIngredients([...ingredientsList])
   }, [ingredientsList, setIngredients])
 
-  const removeIngredientFromList = (e: SyntheticEvent) => {
-    const element = e.currentTarget as HTMLInputElement
+  const removeIngredientFromList = (event: SyntheticEvent) => {
+    const element = event.currentTarget as HTMLInputElement
     const itemToRemove = element.parentElement?.innerText.split(' ')[0]
     setIngridientsList(ingredientsList.filter(item => item !== itemToRemove))
   }
@@ -207,6 +207,7 @@ export default function GetRecipies() {
   const [loading, setLoading] = useState<boolean>(false)
 
   const location = useLocation()
+  console.log('location', location)
 
   const handleClick = async () => {
     if (ingredients.length > 0) {
