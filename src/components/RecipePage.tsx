@@ -151,20 +151,24 @@ const RecipePage = () => {
         })
         setLoading(false)
       } catch (error: any) {
-        setLoading(false)
-        if (error.message.includes('404')) {
-          setSaveMessage({ message: 'Recipe not found', type: 'error' })
-          // setMessageState({ message: 'Recipe not found', type: 'error' })
-        } else {
-          setSaveMessage({ message: error.message, type: 'error' })
-          const timeout = setTimeout(() => {
-            setSaveMessage({ message: '', type: '' })
-            clearTimeout(timeout)
-          }, 5000)
-        }
+          setLoading(false)
+          if (error.message.includes('404')) {
+            setSaveMessage({ message: 'Recipe not found', type: 'error' })
+            // setMessageState({ message: 'Recipe not found', type: 'error' })
+          } else {
+            setSaveMessage({ message: error.message, type: 'error' })
+            const timeout = setTimeout(() => {
+              setSaveMessage({ message: '', type: '' })
+              clearTimeout(timeout)
+            }, 5000)
+          }
       }
     }
     loadRecipeInfo()
+
+    return () => {
+      
+    }
   }, [])
 
   const saveRecipe = async () => {
