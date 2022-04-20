@@ -234,8 +234,8 @@ export default function GetRecipies() {
     const getRecipesFromStorage = () => {
       const storedRecipesCheck = sessionStorage.getItem('recipes')
       const pageKey = sessionStorage.getItem('pageKey')
-      if (storedRecipesCheck && location.key === pageKey) {
-        const storedRecipes = JSON.parse(storedRecipesCheck)
+      if ((storedRecipesCheck && location.key === pageKey) || location.state) {
+        const storedRecipes = JSON.parse(storedRecipesCheck as string)
         setRecipies(storedRecipes)
       }
     }

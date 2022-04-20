@@ -500,6 +500,32 @@ ul li a:hover {
   position: relative;
 }
 
+#return-wrapper {
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+  margin-top: 30px;
+  padding: 8px;
+  width: 228px;
+  background-color: #ecf3fe;
+  border-radius: 19px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#return-wrapper:hover {
+  background-color: #c7d4fd;
+}
+
+#return-icon {
+  font-weight: 600;
+  font-size: 40px;
+}
+
+#return-text {
+  font-size: 20px;
+}
+
 #save-success-message {
   position: absolute;
   top: -25px;
@@ -510,7 +536,7 @@ ul li a:hover {
 }
 
 #recipe-info {
-  margin-top: 50px;
+  margin-top: 20px;
   padding-top: 37px;
 }
 
