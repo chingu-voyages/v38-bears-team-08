@@ -6,6 +6,7 @@ import Login from './components/Login'
 import { FirebaseAuthProvider } from './FirebaseAuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import RecipePage from './components/RecipePage'
+import RecipePageU from './components/RecipePageU'
 import SavedRecipes from './components/SavedRecipes'
 import AuthenticatedRoute from './components/AuthenticatedRoute'
 
@@ -33,7 +34,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path='/:recipeId' element={<RecipePage />} />
+            <Route path='/:recipeId' element={<RecipePageU />} />
             <Route element={<AuthenticatedRoute />}>
               <Route path='/saved-recipes' element={<SavedRecipes />} />
             </Route>

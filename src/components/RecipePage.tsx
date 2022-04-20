@@ -8,6 +8,7 @@ import { MdTimer, MdOutlineToday } from 'react-icons/md'
 import { GiForkKnifeSpoon } from 'react-icons/gi'
 import { addRecipe, getUserRecipes } from '../firebase/firebase'
 import { Triangle } from 'react-loader-spinner'
+import useAxiosFetch from './useAxiosFetch'
 
 interface stepType {
   number: number
@@ -42,18 +43,11 @@ interface useMessageType {
   type: string
   time: number
 }
-
-const getRecipeInfo = async (recipeId: string) => {
-  try {
-    const url = `/.netlify/functions/get-recipe/${recipeId}`
-    const response = await axios.get(url)
-    return response.data
-  } catch (error: any) {
-    throw Error(error)
-  }
-}
-
-const useMessage = (message: string, type: string, time: number = 5000) => {
+const useMessage = (
+  message: string,
+  type: string,
+  time: number = 5000
+): [{ message: string; type: string }, (message: messageType) => void] => {
   const [messageState, setMessageState] = useState<messageType>({
     message: '',
     type: ''
@@ -68,6 +62,16 @@ const useMessage = (message: string, type: string, time: number = 5000) => {
   }, [message, type])
 
   return [messageState, setMessageState]
+}
+
+const getRecipeInfo = async (recipeId: string) => {
+  try {
+    const url = `/.netlify/functions/get-recipe/${recipeId}`
+    const response = await axios.get(url)
+    return response.data
+  } catch (error: any) {
+    throw Error(error)
+  }
 }
 
 const RecipePage = () => {
@@ -101,6 +105,10 @@ const RecipePage = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const navigate = useNavigate()
 
+  // const { data, loading, error, errorMessage } = useAxiosFetch(
+  //   `/.netlify/functions/get-recipe/${recipeId}`
+  // )
+
   useEffect(() => {
     if (user) {
       getUserRecipes(user).then(recipes => {
@@ -131,6 +139,11 @@ const RecipePage = () => {
           extendedIngredients,
           analyzedInstructions
         } = await getRecipeInfo(recipeId as string)
+        console.log('extendedIngredients', extendedIngredients)
+        console.log('typeof extendedIngredients', typeof extendedIngredients)
+        console.log('analyzedInstructions', analyzedInstructions)
+        console.log('typeof analyzedInstructions', typeof analyzedInstructions)
+
         setRecipeData({
           title,
           summary,
@@ -154,7 +167,7 @@ const RecipePage = () => {
         setLoading(false)
         if (error.message.includes('404')) {
           setSaveMessage({ message: 'Recipe not found', type: 'error' })
-          // setMessageState({ message: 'Recipe not found', type: 'error' })
+          setMessageState({ message: 'Recipe not found', type: 'error' })
         } else {
           setSaveMessage({ message: error.message, type: 'error' })
           const timeout = setTimeout(() => {
@@ -205,6 +218,7 @@ const RecipePage = () => {
 
   return (
     <div id='recipe-page'>
+      {messageState && messageState.message}
       <SaveSuccessMessage />
       <RenderMessage message={saveMessage.message} type={saveMessage.type} />
       {loading ? (
